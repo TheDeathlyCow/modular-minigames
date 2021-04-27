@@ -1,3 +1,3 @@
-function mod_mini:reset_testb/tick_testb
-function mod_mini:reset_testcloud/tick_testcloud
+# function mod_mini:reset_testb/tick_testb
+function mod_mini:reset_testc/tick_testc
 # tellraw @a "a"
