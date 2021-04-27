@@ -2,6 +2,7 @@ import os
 
 summon_command = """execute align xz run summon armor_stand ~{0} ~{1} ~{2} {{NoGravity:1b,Marker:1b,Invisible:1b,PersistenceRequired:1b,Tags:["{3}"],ArmorItems:[{{}},{{}},{{id:"minecraft:barrier",Count:1b,tag:{{structure:"{4}"}}}},{{}}]}}\n"""
 
+summon_cloud_command = """execute align xz run summon area_effect_cloud ~{0} ~{1} ~{2} {{Duration:2147483647,Tags:["{3}"],Potion:"{4}"}}\n"""
 
 def gen_on_reload(structure_name):
     reload_func = open(f'reset_{structure_name}/reload_{structure_name}.mcfunction', 'w')
@@ -89,9 +90,10 @@ def gen_load_stand(structure_name):
     load_stand_func.write("""setblock ~ ~1 ~ redstone_block\n""")
     load_stand_func.write(f"""scoreboard players operation @s ld.{structure_name} = loadNum ld.{structure_name}\n""")
     load_stand_func.close()
+    
 
-structure_name = "testb"
-gen_setup(structure_name, (0, 0, 0), (500, 20, 500))
+structure_name = "testcloud"
+gen_setup(structure_name, (0, 0, 0), (100, 100, 100))
 gen_on_reload(structure_name)
 gen_save(structure_name)
 gen_load(structure_name)
