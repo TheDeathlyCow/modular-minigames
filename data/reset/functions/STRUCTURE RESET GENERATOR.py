@@ -8,7 +8,7 @@ summon_command = """execute align xz run summon armor_stand {0} {1} {2} {{NoGrav
 summon_cloud_command = """execute align xz run summon area_effect_cloud {0} {1} {2} {{Duration:2147483647,Tags:["{3}"],Potion:"{4}"}}\n"""
 
 def gen_on_reload(structure_name):
-    reload_func = open(f'reset_{structure_name}/reload_{structure_name}.mcfunction', 'w')
+    reload_func = open(f'{structure_name}/reload_{structure_name}.mcfunction', 'w')
     reload_func.write(f'scoreboard objectives add ld.{structure_name} dummy\n')
     reload_func.write(f'scoreboard objectives add sv.{structure_name} dummy\n')
     reload_func.write(f'scoreboard players add saveNum sv.{structure_name} 0\n')
@@ -17,11 +17,11 @@ def gen_on_reload(structure_name):
 
 def gen_setup(structure_name, start_pos, end_pos):
     try:
-        os.mkdir(f'reset_{structure_name}/')
+        os.mkdir(f'{structure_name}/')
     except FileExistsError:
         pass
 
-    setup_func = open(f'reset_{structure_name}/setup_{structure_name}.mcfunction', 'w')
+    setup_func = open(f'{structure_name}/setup_{structure_name}.mcfunction', 'w')
     setup_func.write("# AUTO GENERATED FUNCTION DO NOT EDIT\n")
 
     dx = end_pos[0] - start_pos[0]
@@ -43,45 +43,45 @@ def gen_setup(structure_name, start_pos, end_pos):
                 setup_func.write(f"execute positioned {x-1}.0 {y-1}.0 {z-1}.0 run kill @e[dx=1,dy=1,dz=1,tag={structure_name}_structmarker]\n")
                 setup_func.write(summon_command.format(x, y, z,
                                                     f'{structure_name}_structmarker',
-                                                    f'mod_mini:{structure_name}/{x}.{y}.{z}'))
+                                                    f'reset:{structure_name}/{x}.{y}.{z}'))
     setup_func.write(f"scoreboard players set loadNum ld.{structure_name} 0\n")
-    setup_func.write(f"function mod_mini:reset_{structure_name}/save_{structure_name}.mcfunction\n")
-    setup_func.write(f"function mod_mini:reset_{structure_name}/tick_{structure_name}.mcfunction\n")
+    setup_func.write(f"function reset:{structure_name}/save_{structure_name}.mcfunction\n")
+    setup_func.write(f"function reset:{structure_name}/tick_{structure_name}.mcfunction\n")
     setup_func.write("""forceload remove all\n""")
     setup_func.close()
 
 
 def gen_save(structure_name):
-    save_func = open(f'reset_{structure_name}/save_{structure_name}.mcfunction', 'w')
+    save_func = open(f'{structure_name}/save_{structure_name}.mcfunction', 'w')
     save_func.write(f"""tellraw @a {{"text":"To save all of the chunks of {structure_name}, you must go to each structure block and click the 'SAVE' button (all caps)! I am very sorry this  is not automatic, there is no other way to save structure files to permanent memory.","color":"green"}}\n""")
     save_func.write(f'scoreboard players add saveNum sv.{structure_name} 1\n')
     save_func.close()
 
 def gen_load(structure_name):
-    load_func = open(f'reset_{structure_name}/load_{structure_name}.mcfunction', 'w')
+    load_func = open(f'{structure_name}/load_{structure_name}.mcfunction', 'w')
     load_func.write(f"""tellraw @a {{"text":"Beginning load of {structure_name}!","color":"red"}}\n""")
     load_func.write(f'scoreboard players add loadNum ld.{structure_name} 1\n')
     load_func.close()
 
 def gen_tick(structure_name):
-    tick_func = open(f'reset_{structure_name}/tick_{structure_name}.mcfunction', 'w')
-    tick_func.write(f'execute as @e[type=armor_stand,tag={structure_name}_structmarker] at @s run function mod_mini:reset_{structure_name}/as_stand_{structure_name}\n')
+    tick_func = open(f'{structure_name}/tick_{structure_name}.mcfunction', 'w')
+    tick_func.write(f'execute as @e[type=armor_stand,tag={structure_name}_structmarker] at @s run function reset:{structure_name}/as_stand_{structure_name}\n')
     tick_func.close()
     gen_as_stand(structure_name)
 
 def gen_as_stand(structure_name):
-    as_stand_func = open(f'reset_{structure_name}/as_stand_{structure_name}.mcfunction', 'w')
+    as_stand_func = open(f'{structure_name}/as_stand_{structure_name}.mcfunction', 'w')
     # as_stand_func.write('tellraw @a {"selector":"@s"}\n')
     as_stand_func.write(f'scoreboard players add @s sv.{structure_name} 0\n')
     as_stand_func.write(f'scoreboard players add @s ld.{structure_name} 0\n')
-    as_stand_func.write(f'execute unless score @s sv.{structure_name} = saveNum sv.{structure_name} run function mod_mini:reset_{structure_name}/save_stand_{structure_name}\n')
-    as_stand_func.write(f'execute unless score @s ld.{structure_name} = loadNum ld.{structure_name} run function mod_mini:reset_{structure_name}/load_stand_{structure_name}\n')
+    as_stand_func.write(f'execute unless score @s sv.{structure_name} = saveNum sv.{structure_name} run function reset:{structure_name}/save_stand_{structure_name}\n')
+    as_stand_func.write(f'execute unless score @s ld.{structure_name} = loadNum ld.{structure_name} run function reset:{structure_name}/load_stand_{structure_name}\n')
     as_stand_func.close()
     gen_save_stand(structure_name)
     gen_load_stand(structure_name)
 
 def gen_save_stand(structure_name, is_temp=False):
-    save_stand_func = open(f'reset_{structure_name}/save_stand_{structure_name}.mcfunction', 'w')
+    save_stand_func = open(f'{structure_name}/save_stand_{structure_name}.mcfunction', 'w')
     save_stand_func.write("""setblock ~ ~ ~ air replace\n""")
     save_stand_func.write("""setblock ~ ~-1 ~ structure_block[mode=save]{name:"temp",posX:0,posY:1,posZ:0,sizeX:48,sizeY:48,sizeZ:48,rotation:"NONE",mirror:"NONE",mode:"SAVE",ignoreEntities:0b} replace\n""")
     save_stand_func.write("""data modify block ~ ~-1 ~ name set from entity @s ArmorItems[2].tag.structure\n""")
@@ -94,7 +94,7 @@ def gen_save_stand(structure_name, is_temp=False):
     save_stand_func.close()
 
 def gen_load_stand(structure_name):
-    load_stand_func = open(f'reset_{structure_name}/load_stand_{structure_name}.mcfunction', 'w')
+    load_stand_func = open(f'{structure_name}/load_stand_{structure_name}.mcfunction', 'w')
     load_stand_func.write("""setblock ~ ~ ~ structure_block[mode=load]{name:"temp",posX:0,posY:0,posZ:0,sizeX:48,sizeY:48,sizeZ:48,rotation:"NONE",mirror:"NONE",mode:"LOAD",ignoreEntities:0b} replace\n""")
     load_stand_func.write("""data modify block ~ ~ ~ name set from entity @s ArmorItems[2].tag.structure\n""")
     load_stand_func.write("""teleport @e[type=!player,dx=48,dy=48,dz=48] ~ -100 ~\n""")
