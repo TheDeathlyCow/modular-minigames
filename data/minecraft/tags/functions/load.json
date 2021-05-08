@@ -1,5 +1,6 @@
 {
     "values": [
-        "reset:load"
+        "reset:load",
+        "spleef:load"
     ]
 }

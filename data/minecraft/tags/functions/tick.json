@@ -1,5 +1,6 @@
 {
     "values": [
-        "reset:tick"
+        "reset:tick",
+        "spleef:tick"
     ]
 }
