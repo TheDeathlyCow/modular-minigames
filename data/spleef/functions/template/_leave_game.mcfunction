@@ -11,5 +11,8 @@ tellraw @a[tag=playing_template] [{"selector":"@s"},{"text":" has left Template!
 tellraw @a[tag=spectating_template] [{"selector":"@s"},{"text":" has left Template!","color":"aqua"}]
 
 scoreboard players reset @s start_spleef
+scoreboard players reset @s leave_spleef
+scoreboard players reset @s splfOver
 
 clear @s
+

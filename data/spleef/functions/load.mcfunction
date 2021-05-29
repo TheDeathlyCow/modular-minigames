@@ -6,6 +6,7 @@ scoreboard players set binary modulus 2
 scoreboard objectives add splfOver deathCount
 scoreboard objectives add startVoteCntr dummy
 scoreboard objectives add start_spleef trigger
+scoreboard objectives add leave_spleef trigger
 scoreboard objectives add spleefCountdown dummy
 
 # spleef player team
