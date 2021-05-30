@@ -25,4 +25,5 @@ team modify spleef_spec friendlyFire false
 
 # arena load functions
 function spleef:template/load
+function spleef:splfhockey/load
 

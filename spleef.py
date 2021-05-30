@@ -1,4 +1,5 @@
 from function_writer import *
+from reset import generate
 """
 things i'll need to prompt user for:
     - arena name
@@ -10,11 +11,13 @@ things i'll need to prompt user for:
 """
 
 SPLEEF_FUNC_FOLDER = "data/spleef/functions/"
+LOAD_FUNC = "reset:{0}/load"
 
 COUNTDOWN_TICK = """\
 execute if score {0} spleefCountdown matches {1} run tellraw @a[tag=playing_{0}] [{{{{"text":"The game will start in ","color":"aqua"}}}},{{{{"text":"{2}","color":"dark_purple"}}}},{{{{"text":" seconds!"}}}}]
 execute if score {0} spleefCountdown matches {1} run playsound minecraft:block.note_block.hat master @a[tag=playing_{0}] ~ ~ ~ 500
 """
+
 
 class Spleef:
 
@@ -27,8 +30,8 @@ class Spleef:
         self._countdown = {
             "initiate": {
                 COMMANDS: [
-                    "scoreboard players set {0} spleefCountdown 300",
-                    "scoreboard players reset @a[scores={{start_spleef=1..}}] start_spleef"
+                    "scoreboard players set {0} spleefCountdown 305",
+                    "scoreboard players reset @a[scores={{start_spleef=0..}}] start_spleef"
                 ]
             },
             "tick": {
@@ -43,9 +46,9 @@ class Spleef:
             "_join": {
                 COMMANDS: [
                     "gamemode adventure @s",
-                    "scoreboard players operation {0} isSplfRunning -= binary modulus"
-                    "execute if score {0} isSplfRunning matches -2 run function spleef:{0}/join_game"
-                    "execute if score {0} isSplfRunning matches -1 run function spleef:{0}/join_spectators"
+                    "scoreboard players operation {0} isSplfRunning -= binary modulus",
+                    "execute if score {0} isSplfRunning matches -2 run function spleef:{0}/join_game",
+                    "execute if score {0} isSplfRunning matches -1 run function spleef:{0}/join_spectators",
                     "scoreboard players operation {0} isSplfRunning %= binary modulus"
                 ],
                 COMMENTS: [
@@ -103,8 +106,8 @@ class Spleef:
                 COMMANDS: [
                     "team join spleef_plyr @s",
                     "tag @s add playing_{0}",
-                    "teleport @s 5770 77 3779",
-                    "spawnpoint @s 5770 76 3774",
+                    f"teleport @s {player_pos}",
+                    f"spawnpoint @s {player_pos}",
                     "scoreboard players enable @s start_spleef",
                     "scoreboard players enable @s leave_spleef",
                     "tag @s remove spectating_{0}",
@@ -112,6 +115,7 @@ class Spleef:
                     "tellraw @a[tag=spectating_{0}] [{{\"selector\":\"@s\"}},{{\"text\":\" has joined the game!\",\"color\":\"aqua\"}}]",
                     "tellraw @s [{{\"text\":\"Type \",\"color\":\"aqua\"}},{{\"text\":\"/trigger start_spleef\",\"color\":\"dark_purple\"}},{{\"text\":\" when are you ready to start!\"}}]",
                     "tellraw @s [{{\"text\":\"Type \",\"color\":\"aqua\"}},{{\"text\":\"/trigger leave_spleef\",\"color\":\"dark_purple\"}},{{\"text\":\" if you want to leave!\"}}]",
+                    "scoreboard players operation @s ld.{0} = loadNum ld.{0}",
                     "function reset:{0}/_join_player"
                 ]
             },
@@ -122,9 +126,9 @@ class Spleef:
                     "function reset:{0}/_join_spectator",
                     "tag @s remove playing_{0}",
                     "teleport @s {}".format(self.spectator_pos),
-                    "spawnpoint @s 5770 76 3774".format(self.spectator_pos),
+                    "spawnpoint @s {}".format(self.spectator_pos),
                     "gamemode adventure @s",
-                    f"tellraw @a[tag=playing_{{{{0}}}}] [{{{{\"selector\": \"@s\", \"color\"dark_purple\"}}}},{{{{\"text\": \" is now spectating {proper_name}!\", \"color\": \"aqua\"}}}}]",
+                    f"tellraw @a[tag=playing_{{{0}}}] [{{{{\"selector\": \"@s\", \"color\":\"dark_purple\"}}}},{{{{\"text\": \" is now spectating {proper_name}!\", \"color\": \"aqua\"}}}}]",
                     "tellraw @s [{{\"text\": \"Type \", \"color\": \"aqua\"}}, {{\"text\": \"/trigger leave_spleef\",\"color\": \"dark_purple\"}}, {{\"text\": \" when you want to leave!\"}}]",
                     "scoreboard players enable @s leave_spleef",
                     "clear @s"
@@ -147,7 +151,8 @@ class Spleef:
                     "tellraw @a[tag=playing_{0}] [{{\"text\":\"The game has begun!\",\"color\":\"dark_purple\"}}]",
                     "playsound minecraft:block.note_block.harp master @a[tag=playing_{0}] ~ ~ ~ 500",
                     "effect give @a[tag=playing_{0}] minecraft:instant_health 1 10",
-                    "effect give @a[tag=playing_{0}] minecraft:saturation 1 10"
+                    "effect give @a[tag=playing_{0}] minecraft:saturation 1 10",
+                    "scoreboard players reset @a[tag=playing_{0}] splfOver"
                 ],
                 COMMENTS: [
                     "set number of players in game"
@@ -178,7 +183,15 @@ class Spleef:
                     "tellraw @a [{{\"selector\":\"@s\"}},{{\"text\":\" has won spleef in {0}!\",\"color\":\"aqua\"}}]",
                     "function spleef:{0}/join_spectators",
                     "scoreboard players set {0} isSplfRunning 0 ",
-                    "scoreboard players enable @s leave_spleef"
+                    "scoreboard players enable @s leave_spleef",
+                    "function " + LOAD_FUNC
+                ]
+            },
+            "invalid_version": {
+                COMMANDS: [
+                    "tellraw @s [{{\"text\":\"You left the game during a match. Returning you to spawn...\",\"color\":\"red\"}}]",
+                    "playsound minecraft:block.note_block.didgeridoo master @s ~ ~ ~",
+                    "function spleef:{0}/_leave_game"
                 ]
             }
         }
@@ -193,8 +206,10 @@ class Spleef:
     def gen_spleef(self):
         writer = FuncWriter(SPLEEF_FUNC_FOLDER + f"{self.name}/", self.name)
         writer.write_functions(self._spleef)
-        writer = FuncWriter(SPLEEF_FUNC_FOLDER + f"{self.name}/countdown/", self.name)
+        writer = FuncWriter(SPLEEF_FUNC_FOLDER +
+                            f"{self.name}/countdown/", self.name)
         writer.write_functions(self._countdown)
+
 
 def get_countdown_commands(name: str, seconds: list) -> list:
     commands = []
@@ -204,9 +219,19 @@ def get_countdown_commands(name: str, seconds: list) -> list:
 
 
 spleef_items = [
-    "diamond_pickaxe{{CanDestroy:[\"minecraft:packed_ice\"],Unbreakable:1b,Enchantments:[{{id:\"minecraft:efficiency\",lvl:3s}}]}}"
+    "diamond_pickaxe{{CanDestroy:[\"minecraft:packed_ice\"],Unbreakable:1b,Enchantments:[{{id:\"minecraft:efficiency\",lvl:3s}}]}}",
+    "shears{{CanDestroy:[\"minecraft:red_wool\",\"minecraft:white_wool\",\"minecraft:blue_wool\",\"minecraft:light_blue_wool\"],Unbreakable:1b,Enchantments:[{{id:\"minecraft:efficiency\",lvl:5s}}]}}"
 ]
 
-spleef_game = Spleef("test_generation", "TestGen", BlockPos(
-    5770, 77, 3779), BlockPos(5770, 76, 3774), spleef_items)
+arena_name = "splfhockey"
+
+spleef_game = Spleef(arena_name, "TotallyNotHockey", BlockPos(
+    1122, 94, -471), BlockPos(1122, 104, -509), spleef_items)
+
+spleef_arena_bounds = [
+    (1208, 76, -393),
+    (964, 152, -613)
+]
+
 spleef_game.gen_spleef()
+generate(arena_name, spleef_arena_bounds[0], spleef_arena_bounds[1], f"spleef:{arena_name}/invalid_version")

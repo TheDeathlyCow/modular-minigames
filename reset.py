@@ -68,10 +68,10 @@ def gen_load(structure_name):
     load_func.write(f'scoreboard players add loadNum ld.{structure_name} 1\n')
     load_func.close()
 
-def gen_tick(structure_name):
+def gen_tick(structure_name, invalid_reset_function):
     tick_func = open(func_root + f'{structure_name}/tick.mcfunction', 'w')
     tick_func.write(f'execute as @e[type=armor_stand,tag={structure_name}_structmarker] at @s run function reset:{structure_name}/as_stand\n')
-    tick_func.write(f'execute as @a[tag=playing_{structure_name}] unless score @s ld.{structure_name} = loadNum ld.{structure_name}')
+    tick_func.write(f'execute as @a[tag=playing_{structure_name}] at @s unless score @s ld.{structure_name} = loadNum ld.{structure_name} run function ' + invalid_reset_function + '\n')
     tick_func.close()
     gen_as_stand(structure_name)
 
@@ -164,11 +164,7 @@ def run():
     structure_name = input_data[0]
     start_pos  = input_data[1]
     end_pos = input_data[2]
-    gen_setup(structure_name, start_pos, end_pos)
-    gen_on_reload(structure_name)
-    gen_save(structure_name)
-    gen_load(structure_name)
-    gen_tick(structure_name)
+    generate(structure_name, start_pos, end_pos, "")
 
     # village test coords (5558, 32, 5095), (5821, 128, 5353)
 
@@ -176,6 +172,13 @@ def run():
     # Enter structure name (13 characters max, lowercase letters only): villagee
     # Enter start position (integers only, of form 'x y z'): 5825 20 3611
     # Enter end position (integers only, of form 'x y z'): 5633 128 3806
+
+def generate(structure_name, start_pos, end_pos, invalid_reset_function):
+    gen_setup(structure_name, start_pos, end_pos)
+    gen_on_reload(structure_name)
+    gen_save(structure_name)
+    gen_load(structure_name)
+    gen_tick(structure_name, invalid_reset_function)
 
 def reject_run():
     print("Do not run this file! Run RUNME.py instead!")
