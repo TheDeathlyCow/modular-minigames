@@ -1,5 +1,5 @@
 from function_writer import *
-from reset import generate
+from reset import Arena
 """
 things i'll need to prompt user for:
     - arena name
@@ -11,7 +11,7 @@ things i'll need to prompt user for:
 """
 
 SPLEEF_FUNC_FOLDER = "data/spleef/functions/"
-LOAD_FUNC = "reset:{0}/load"
+LOAD_FUNC = "reset:{0}/_load"
 
 COUNTDOWN_TICK = """\
 execute if score {0} spleefCountdown matches {1} run tellraw @a[tag=playing_{0}] [{{{{"text":"The game will start in ","color":"aqua"}}}},{{{{"text":"{2}","color":"dark_purple"}}}},{{{{"text":" seconds!"}}}}]
@@ -63,9 +63,9 @@ class Spleef:
                     "tag @s remove playing_{}",
                     "tag @s remove leave_{}",
                     "tellraw @a[tag=playing_{0}] [{{{{\"selector\":\"@s\"}}}},{{{{\"text\":\" has left {0}!\",\"color\":\"aqua\"}}}}]".format(
-                        proper_name),
+                        self.name),
                     "tellraw @a[tag=spectating_{0}] [{{{{\"selector\":\"@s\"}}}},{{{{\"text\":\" has left {0}!\",\"color\":\"aqua\"}}}}]".format(
-                        proper_name),
+                        self.name),
                     "scoreboard players reset @s start_spleef",
                     "scoreboard players reset @s leave_spleef",
                     "scoreboard players reset @s splfOver",
@@ -180,7 +180,7 @@ class Spleef:
             },
             "victory": {
                 COMMANDS: [
-                    "tellraw @a [{{\"selector\":\"@s\"}},{{\"text\":\" has won spleef in {0}!\",\"color\":\"aqua\"}}]",
+                    f"tellraw @a [{{{{\"selector\":\"@s\"}}}},{{{{\"text\":\" has won spleef in {self.proper_name}!\",\"color\":\"aqua\"}}}}]",
                     "function spleef:{0}/join_spectators",
                     "scoreboard players set {0} isSplfRunning 0 ",
                     "scoreboard players enable @s leave_spleef",
@@ -218,20 +218,41 @@ def get_countdown_commands(name: str, seconds: list) -> list:
     return commands
 
 
-spleef_items = [
-    "diamond_pickaxe{{CanDestroy:[\"minecraft:packed_ice\"],Unbreakable:1b,Enchantments:[{{id:\"minecraft:efficiency\",lvl:3s}}]}}",
-    "shears{{CanDestroy:[\"minecraft:red_wool\",\"minecraft:white_wool\",\"minecraft:blue_wool\",\"minecraft:light_blue_wool\"],Unbreakable:1b,Enchantments:[{{id:\"minecraft:efficiency\",lvl:5s}}]}}"
-]
+def generate_hockey():
+    spleef_items = [
+        "diamond_pickaxe{{CanDestroy:[\"minecraft:packed_ice\"],Unbreakable:1b,Enchantments:[{{id:\"minecraft:efficiency\",lvl:3s}}]}}",
+        "shears{{CanDestroy:[\"minecraft:red_wool\",\"minecraft:white_wool\",\"minecraft:blue_wool\",\"minecraft:light_blue_wool\"],Unbreakable:1b,Enchantments:[{{id:\"minecraft:efficiency\",lvl:5s}}]}}"
+    ]
 
-arena_name = "splfhockey"
+    arena_name = "splfhockey"
+    proper_name = "TotallyNotHockey"
 
-spleef_game = Spleef(arena_name, "TotallyNotHockey", BlockPos(
-    1122, 94, -471), BlockPos(1122, 104, -509), spleef_items)
+    spleef_game = Spleef(arena_name, proper_name, BlockPos(
+        1122, 94, -471), BlockPos(1122, 104, -509), spleef_items)
 
-spleef_arena_bounds = [
-    (1208, 76, -393),
-    (964, 152, -613)
-]
+    spleef_arena_bounds = [
+        (1208, 76, -393),
+        (964, 152, -613)
+    ]
 
-spleef_game.gen_spleef()
-generate(arena_name, spleef_arena_bounds[0], spleef_arena_bounds[1], f"spleef:{arena_name}/invalid_version")
+    spleef_game.gen_spleef()
+    arena = Arena(arena_name, proper_name, BlockPos(1208, 76, -393), BlockPos(964, 152, -613))
+    arena.generate()
+
+def generate_herb():
+    spleef_items = [
+        """bow{{Unbreakable:1b,Enchantments:[{{id:"minecraft:flame",lvl:1s}},{{id:"minecraft:infinity",lvl:1s}}]}}""",
+        """arrow"""
+    ]
+
+    arena_name = "splfmall"
+    proper_name = "TNT Mall"
+
+    spleef_game = Spleef(arena_name, proper_name, BlockPos(-820, 91, 1260), BlockPos(-841, 91, 1260), spleef_items)
+
+    spleef_game.gen_spleef()
+
+    arena = Arena(arena_name, proper_name, BlockPos(-874, 67, 1174), BlockPos(-758, 128, 1325))
+    arena.generate()
+
+generate_herb()

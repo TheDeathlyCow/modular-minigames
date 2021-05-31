@@ -1,3 +1,4 @@
+from function_writer import *
 import os
 import re
 
@@ -12,124 +13,137 @@ func_root = "data/reset/functions/"
 
 ##* Generator Functions *##
 
-def gen_on_reload(structure_name):
-    reload_func = open(func_root + f'{structure_name}/reload.mcfunction', 'w')
-    reload_func.write(f'scoreboard objectives add ld.{structure_name} dummy\n')
-    reload_func.write(f'scoreboard objectives add sv.{structure_name} dummy\n')
-    reload_func.write(f'scoreboard players add saveNum sv.{structure_name} 0\n')
-    reload_func.write(f'scoreboard players add loadNum ld.{structure_name} 0\n')
-    reload_func.close()
 
-def gen_setup(structure_name, start_pos, end_pos):
-    try:
-        os.mkdir(func_root + f'{structure_name}/')
-    except FileExistsError:
-        pass
+class Arena:
 
-    setup_func = open(func_root + f'{structure_name}/setup.mcfunction', 'w')
-    setup_func.write("# AUTO GENERATED FUNCTION DO NOT EDIT\n")
+    def __init__(self, name: str, proper_name: str, bound1: BlockPos, bound2: BlockPos) -> None:
+        self.name = name
+        self.proper_name = proper_name
+        self.bound1 = bound1
+        self.bound2 = bound2
 
-    dx = end_pos[0] - start_pos[0]
-    dy = end_pos[1] - start_pos[1]
-    dz = end_pos[2] - start_pos[2]
+        try:
+            os.mkdir(func_root + f'{self.name}/')
+        except FileExistsError:
+            pass
 
-    dx = dx if dx != 0 else 1
-    dy = dy if dy != 0 else 1
-    dz = dz if dz != 0 else 1
+        self._arena = {
+            'reload': {
+                COMMANDS: [
+                    'scoreboard objectives add ld.{0} dummy',
+                    'scoreboard objectives add sv.{0} dummy',
+                    'scoreboard objectives add sv.{0} dummy',
+                    'scoreboard players add saveNum sv.{0} 0',
+                    'scoreboard players add loadNum ld.{0} 0'
+                ]
+            },
+            '_setup': {
+                COMMANDS: self._get_setup_commands()
+            },
+            '_save': {
+                COMMANDS: [
+                    """tellraw @a {{"text":"To save all of the chunks of {0}, you must go to each structure block and click the 'SAVE' button (all caps)! I am very sorry this  is not automatic, there is no other way to save structure files to permanent memory.","color":"green"}}""",
+                    "scoreboard players add saveNum sv.{0} 1"
+                ]
+            },
+            '_load': {
+                COMMANDS: [
+                    f"""tellraw @a {{{{"text":"Commencing reset of {proper_name}!","color":"red"}}}}""",
+                    "scoreboard players add loadNum ld.{0} 1"
+                ]
+            },
+            'tick': {
+                COMMANDS: [
+                    """execute as @e[type=armor_stand,tag={0}_structmarker] at @s run function reset:{0}/as_stand""",
+                    'execute as @a[tag=playing_{0}] at @s unless score @s ld.{0} = loadNum ld.{0} run function reset:{0}/_leave_player'
+                ],
+                COMMENTS: [
+                    '# Call this when a PLAYER leaves the arena, AS that player.'
+                ]
+            },
+            'as_stand': {
+                COMMANDS: [
+                    """scoreboard players add @s sv.{0} 0""",
+                    """scoreboard players add @s ld.{0} 0""",
+                    """execute unless score @s sv.{0} = saveNum sv.{0} run function reset:{0}/save_stand""",
+                    """execute unless score @s ld.{0} = loadNum ld.{0} run function reset:{0}/load_stand""",
+                ]
+            },
+            'save_sand': {
+                COMMANDS: [
+                    'setblock ~ ~ ~ air replace',
+                    """setblock ~ ~-1 ~ structure_block[mode=save]{{name:"temp",posX:0,posY:1,posZ:0,sizeX:48,sizeY:48,sizeZ:48,rotation:"NONE",mirror:"NONE",mode:"SAVE",ignoreEntities:0b}} replace""",
+                    """data modify block ~ ~-1 ~ name set from entity @s ArmorItems[2].tag.structure""",
+                    """scoreboard players operation @s sv.{0} = saveNum sv.{0}"""
+                ]
+            },
+            'load_stand': {
+                COMMANDS: [
+                    """setblock ~ ~ ~ structure_block[mode=load]{{name:"temp",posX:0,posY:0,posZ:0,sizeX:48,sizeY:48,sizeZ:48,rotation:"NONE",mirror:"NONE",mode:"LOAD",ignoreEntities:0b}} replace""",
+                    """data modify block ~ ~ ~ name set from entity @s ArmorItems[2].tag.structure""",
+                    "teleport @e[type=!player,type=!armor_stand,dx=48,dy=48,dz=48] ~ -100 ~",
+                    "setblock ~ ~1 ~ redstone_block",
+                    "teleport @e[type=item,dx=48,dy=48,dz=48] ~ -100 ~",
+                    "scoreboard players operation @s ld.{0} = loadNum ld.{0}"
+                ]
+            },
+            '_join_player': {
+                COMMANDS: [
+                    'scoreboard players operation @s ld.{0} = loadNum ld.{0}'
+                ],
+                COMMENTS: [
+                    '# Call this when a PLAYER enters the arena, AS that player.'
+                ]
+            },
+            '_leave_player': {
+                COMMANDS: [
+                    'tellraw @s [{{"text":"The arena you are currently in has reset! Removing you from the arena now...","color":"gold"}},{{"text":"\\nThis may occur if you disconnected in the middle of a game and not coming back)","color":"red","italic":true}}]',
+                    'playsound minecraft:block.note_block.didgeridoo master @s ~ ~ ~ 1 0.8',
+                    'tag @s add leave_{0}'
+                ],
+                COMMENTS: [
+                    '# This function is called when a player is in an arena they do not belong in, not generally when they leave.'
+                ]
+            }
+        }
 
-    x_dir = abs(dx) // dx
-    y_dir = abs(dy) // dy
-    z_dir = abs(dz) // dz
+    def _get_setup_commands(self):
+        setup_func = []
+        setup_func.append("# AUTO GENERATED FUNCTION DO NOT EDIT")
 
-    for x in range(start_pos[0], end_pos[0], 48 * x_dir):
-        for y in range(start_pos[1], end_pos[1], 48 * y_dir):
-            for z in range(start_pos[2], end_pos[2], 48 * z_dir):
-                setup_func.write(f"""forceload add {x} {z}\n""")
-                setup_func.write(f"execute positioned {x-1}.0 {y-1}.0 {z-1}.0 run kill @e[dx=1,dy=1,dz=1,tag={structure_name}_structmarker]\n")
-                setup_func.write(summon_command.format(x, y, z,
-                                                    f'{structure_name}_structmarker',
-                                                    f'reset:{structure_name}/{x}.{y}.{z}'))
-    setup_func.write(f"scoreboard players set loadNum ld.{structure_name} 0\n")
-    setup_func.write(f"function reset:{structure_name}/save.mcfunction\n")
-    setup_func.write(f"function reset:{structure_name}/tick.mcfunction\n")
-    setup_func.write("""forceload remove all\n""")
-    setup_func.close()
+        dx = self.bound1.x - self.bound2.x
+        dy = self.bound1.y - self.bound2.y
+        dz = self.bound1.z - self.bound2.z
 
+        dx = dx if dx != 0 else 1
+        dy = dy if dy != 0 else 1
+        dz = dz if dz != 0 else 1
 
-def gen_save(structure_name):
-    save_func = open(func_root + f'{structure_name}/save.mcfunction', 'w')
-    save_func.write(f"""tellraw @a {{"text":"To save all of the chunks of {structure_name}, you must go to each structure block and click the 'SAVE' button (all caps)! I am very sorry this  is not automatic, there is no other way to save structure files to permanent memory.","color":"green"}}\n""")
-    save_func.write(f'scoreboard players add saveNum sv.{structure_name} 1\n')
-    save_func.close()
+        x_dir = abs(dx) // dx
+        y_dir = abs(dy) // dy
+        z_dir = abs(dz) // dz
 
-def gen_load(structure_name):
-    load_func = open(func_root + f'{structure_name}/load.mcfunction', 'w')
-    load_func.write(f"""tellraw @a {{"text":"Beginning load of {structure_name}!","color":"red"}}\n""")
-    load_func.write(f'scoreboard players add loadNum ld.{structure_name} 1\n')
-    load_func.close()
+        for x in range(self.bound1.x, self.bound2.x, 48 * x_dir):
+            for y in range(self.bound1.y, self.bound2.y, 48 * y_dir):
+                for z in range(self.bound1.z, self.bound2.z, 48 * z_dir):
+                    setup_func.append(f"""forceload add {x} {z}\n""")
+                    setup_func.append(
+                        f"execute positioned {x-1}.0 {y-1}.0 {z-1}.0 run kill @e[dx=1,dy=1,dz=1,tag={{0}}_structmarker]")
+                    setup_func.append(summon_command.format(x, y, z,
+                                                            '{0}_structmarker',
+                                                            f'reset:{{0}}/{x}.{y}.{z}'))
+        setup_func.append("scoreboard players set loadNum ld.{0} 0")
+        setup_func.append("function reset:{0}/save.mcfunction")
+        setup_func.append("function reset:{0}/tick.mcfunction")
+        setup_func.append("""forceload remove all""")
+        return setup_func
 
-def gen_tick(structure_name, invalid_reset_function):
-    tick_func = open(func_root + f'{structure_name}/tick.mcfunction', 'w')
-    tick_func.write(f'execute as @e[type=armor_stand,tag={structure_name}_structmarker] at @s run function reset:{structure_name}/as_stand\n')
-    tick_func.write(f'execute as @a[tag=playing_{structure_name}] at @s unless score @s ld.{structure_name} = loadNum ld.{structure_name} run function ' + invalid_reset_function + '\n')
-    tick_func.close()
-    gen_as_stand(structure_name)
-
-def gen_as_stand(structure_name):
-    as_stand_func = open(func_root + f'{structure_name}/as_stand.mcfunction', 'w')
-    # as_stand_func.write('tellraw @a {"selector":"@s"}\n')
-    as_stand_func.write(f'scoreboard players add @s sv.{structure_name} 0\n')
-    as_stand_func.write(f'scoreboard players add @s ld.{structure_name} 0\n')
-    as_stand_func.write(f'execute unless score @s sv.{structure_name} = saveNum sv.{structure_name} run function reset:{structure_name}/save_stand\n')
-    as_stand_func.write(f'execute unless score @s ld.{structure_name} = loadNum ld.{structure_name} run function reset:{structure_name}/load_stand\n')
-    as_stand_func.close()
-    gen_save_stand(structure_name)
-    gen_load_stand(structure_name)
-
-def gen_save_stand(structure_name, is_temp=False):
-    save_stand_func = open(func_root + f'{structure_name}/save_stand.mcfunction', 'w')
-    save_stand_func.write("""setblock ~ ~ ~ air replace\n""")
-    save_stand_func.write("""setblock ~ ~-1 ~ structure_block[mode=save]{name:"temp",posX:0,posY:1,posZ:0,sizeX:48,sizeY:48,sizeZ:48,rotation:"NONE",mirror:"NONE",mode:"SAVE",ignoreEntities:0b} replace\n""")
-    save_stand_func.write("""data modify block ~ ~-1 ~ name set from entity @s ArmorItems[2].tag.structure\n""")
-    save_stand_func.write(f"""scoreboard players operation @s sv.{structure_name} = saveNum sv.{structure_name}\n""")
-    if is_temp:
-        save_stand_func.write("""setblock ~ ~-2 ~ redstone_block\n""")
-        save_stand_func.write("""fill ~ ~-1 ~ ~ ~-2 ~ air\n""")
-
-    save_stand_func.write(f"""scoreboard players operation @s sv.{structure_name} = saveNum sv.{structure_name}\n""")
-    save_stand_func.close()
-
-def gen_load_stand(structure_name):
-    load_stand_func = open(func_root + f'{structure_name}/load_stand.mcfunction', 'w')
-    load_stand_func.write("""setblock ~ ~ ~ structure_block[mode=load]{name:"temp",posX:0,posY:0,posZ:0,sizeX:48,sizeY:48,sizeZ:48,rotation:"NONE",mirror:"NONE",mode:"LOAD",ignoreEntities:0b} replace\n""")
-    load_stand_func.write("""data modify block ~ ~ ~ name set from entity @s ArmorItems[2].tag.structure\n""")
-    load_stand_func.write("""teleport @e[type=!player,type=!armor_stand,dx=48,dy=48,dz=48] ~ -100 ~\n""")
-    load_stand_func.write("""setblock ~ ~1 ~ redstone_block\n""")
-    load_stand_func.write("""teleport @e[type=item,dx=48,dy=48,dz=48] ~ -100 ~\n""")
-    load_stand_func.write(f"""scoreboard players operation @s ld.{structure_name} = loadNum ld.{structure_name}\n""")
-    load_stand_func.close()
-    
-def gen_join(structure_name):
-    join_plyr = open(func_root + f'{structure_name}/_join_player.mcfunction', 'w')
-    join_spec = open(func_root + f'{structure_name}/_join_spectator.mcfunction', 'w')
-    join_plyr.write('# Call this when a PLAYER enters the arena, AS that player.\n')
-    join_spec.write('# Call this when a SPECTATOR enters the arena, AS that spectator.\n')
-
-    join_plyr.write(f'scoreboard players operation @s ld.{structure_name} = loadNum ld.{structure_name}\n')
-
-    join_plyr.close()
-    join_spec.close()
-
-def gen_leave(structure_name):
-
-    leave_plyr = open(func_root + f'{structure_name}/_leave_player.mcfunction', 'w')
-    leave_plyr.write('# Call this when a PLAYER leaves the arena, AS that player.\n')
-    leave_plyr.write('tellraw @s [{"text":"The arena you are currently in has reset! Removing you from the arena now...","color":"gold"},{"text":"\nThis may occur if you disconnected in the middle of a game and not coming back)","color":"red","italic":true}]\n')
-    leave_plyr.write('playsound minecraft:block.note_block.didgeridoo master @s ~ ~ ~ 1 0.8\n')
-    leave_plyr.write(f'tag @s add leave_{structure_name}\n')
-    leave_plyr.close()
+    def generate(self):
+        writer = FuncWriter(func_root + self.name + '/', self.name)
+        writer.write_functions(self._arena)
 
 ##* Command-Line input Functions *##
+
 
 def get_command_input_data():
     struct_name = get_structure_name()
@@ -137,19 +151,23 @@ def get_command_input_data():
     end_pos = get_pos("end")
     return (struct_name, start_pos, end_pos)
 
+
 def get_structure_name():
     is_valid = False
     while not is_valid:
-        structure_name = input("Enter structure name (13 characters max, lowercase letters only): ")
+        structure_name = input(
+            "Enter structure name (13 characters max, lowercase letters only): ")
         is_valid = re.search(r"^[a-z]{1,13}$", structure_name) != None
         if not is_valid:
             print("Invalid structure name, please try again.")
     return structure_name
 
+
 def get_pos(name):
     is_valid = False
     while not is_valid:
-        pos_str = input(f"Enter {name} position (integers only, of form 'x y z'): ")
+        pos_str = input(
+            f"Enter {name} position (integers only, of form 'x y z'): ")
         is_valid = re.search(r"^[0-9]+[ ][0-9]+[ ][0-9]+$", pos_str) != None
         if not is_valid:
             print("Invalid position, please try again (make sure to include spaces!).")
@@ -162,27 +180,30 @@ def get_pos(name):
 def run():
     input_data = get_command_input_data()
     structure_name = input_data[0]
-    start_pos  = input_data[1]
+    start_pos = input_data[1]
     end_pos = input_data[2]
-    generate(structure_name, start_pos, end_pos, "")
+    # generate(structure_name, start_pos, end_pos, "")
 
     # village test coords (5558, 32, 5095), (5821, 128, 5353)
 
-    # new test: 
+    # new test:
     # Enter structure name (13 characters max, lowercase letters only): villagee
     # Enter start position (integers only, of form 'x y z'): 5825 20 3611
     # Enter end position (integers only, of form 'x y z'): 5633 128 3806
 
-def generate(structure_name, start_pos, end_pos, invalid_reset_function):
-    gen_setup(structure_name, start_pos, end_pos)
-    gen_on_reload(structure_name)
-    gen_save(structure_name)
-    gen_load(structure_name)
-    gen_tick(structure_name, invalid_reset_function)
 
-def reject_run():
-    print("Do not run this file! Run RUNME.py instead!")
-    exit_input = input("Press enter to continue...")
+# def generate(structure_name, start_pos, end_pos, invalid_reset_function):
+#     gen_setup(structure_name, start_pos, end_pos)
+#     gen_on_reload(structure_name)
+#     gen_save(structure_name)
+#     gen_load(structure_name)
+#     gen_tick(structure_name, invalid_reset_function)
 
-if __name__ == '__main__':
-    run()
+
+# def reject_run():
+#     print("Do not run this file! Run RUNME.py instead!")
+#     exit_input = input("Press enter to continue...")
+
+
+# if __name__ == '__main__':
+#     run()
