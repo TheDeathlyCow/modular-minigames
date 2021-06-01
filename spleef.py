@@ -31,7 +31,8 @@ class Spleef:
             "initiate": {
                 COMMANDS: [
                     "scoreboard players set {0} spleefCountdown 305",
-                    "scoreboard players reset @a[scores={{start_spleef=0..}}] start_spleef"
+                    "scoreboard players reset @a[scores={{start_spleef=0..}}] start_spleef",
+                    "scoreboard players reset @a[tag=playing_{0}] leave_spleef"
                 ]
             },
             "tick": {
@@ -59,6 +60,7 @@ class Spleef:
                 COMMANDS: [
                     "team leave @s",
                     "teleport @s {}".format(HUB_COORDINATES),
+                    "spawnpoint @s {}".format(HUB_COORDINATES),
                     "tag @s remove spectating_{}",
                     "tag @s remove playing_{}",
                     "tag @s remove leave_{}",
@@ -136,7 +138,7 @@ class Spleef:
             },
             "leave_trigger": {
                 COMMANDS: [
-                    "execute if entity @s[tag=spectating_{0}] run tag @s add leave_{0}",
+                    "tag @s[tag=spectating_{0}] add leave_{0}",
                     "execute if score {0} isSplfRunning matches 0 if entity @s[tag=playing_{0}] run tag @s add leave_{0}"
                 ]
             },
@@ -152,7 +154,10 @@ class Spleef:
                     "playsound minecraft:block.note_block.harp master @a[tag=playing_{0}] ~ ~ ~ 500",
                     "effect give @a[tag=playing_{0}] minecraft:instant_health 1 10",
                     "effect give @a[tag=playing_{0}] minecraft:saturation 1 10",
-                    "scoreboard players reset @a[tag=playing_{0}] splfOver"
+                    "scoreboard players reset @a[tag=playing_{0}] splfOver",
+                    "effect clear @a[tag=playing_{0}]",
+                    "effect give @a[tag=playing_{0}] instant_health 1 10",
+                    "effect give @a[tag=playing_{0}] saturation 1 10"
                 ],
                 COMMENTS: [
                     "set number of players in game"
@@ -163,7 +168,6 @@ class Spleef:
                     "scoreboard players set {0} startVoteCntr 0",
                     "execute as @a[tag=playing_{0},scores={{start_spleef=1..}}] run scoreboard players add {0} startVoteCntr 1",
                     "execute as @a[tag=playing_{0},scores={{start_spleef=1}}] run tellraw @a[tag=playing_{0}] [{{\"selector\":\"@s\"}},{{\"text\":\" is ready to start!\",\"color\":\"aqua\"}}]",
-                    "scoreboard players add @a[scores={{start_spleef=1}}] start_spleef 1",
                     "function spleef:{0}/count_players",
                     "execute if entity @a[tag=playing_{{0}},scores={{{{start_spleef=1..}}}}] if score {{0}} startVoteCntr = {{0}} splfPlyrCnt if score {{0}} spleefCountdown matches ..-1 positioned {} run function spleef:{{0}}/countdown/initiate".format(
                         player_pos)
@@ -221,7 +225,10 @@ def get_countdown_commands(name: str, seconds: list) -> list:
 def generate_hockey():
     spleef_items = [
         "diamond_pickaxe{{CanDestroy:[\"minecraft:packed_ice\"],Unbreakable:1b,Enchantments:[{{id:\"minecraft:efficiency\",lvl:3s}}]}}",
-        "shears{{CanDestroy:[\"minecraft:red_wool\",\"minecraft:white_wool\",\"minecraft:blue_wool\",\"minecraft:light_blue_wool\"],Unbreakable:1b,Enchantments:[{{id:\"minecraft:efficiency\",lvl:5s}}]}}"
+        "shears{{CanDestroy:[\"minecraft:red_wool\",\"minecraft:white_wool\",\"minecraft:blue_wool\",\"minecraft:light_blue_wool\"],Unbreakable:1b,Enchantments:[{{id:\"minecraft:efficiency\",lvl:5s}}]}}",
+        "lingering_potion{{Potion:\"minecraft:slowness\"}}",
+        "lingering_potion{{Potion:\"minecraft:slowness\"}}",
+        "lingering_potion{{Potion:\"minecraft:slowness\"}}"
     ]
 
     arena_name = "splfhockey"
@@ -255,4 +262,5 @@ def generate_herb():
     arena = Arena(arena_name, proper_name, BlockPos(-874, 67, 1174), BlockPos(-758, 128, 1325))
     arena.generate()
 
+generate_hockey()
 generate_herb()

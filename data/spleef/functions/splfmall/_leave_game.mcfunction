@@ -2,6 +2,7 @@
 
 team leave @s
 teleport @s 0 100 0
+spawnpoint @s 0 100 0
 tag @s remove spectating_splfmall
 tag @s remove playing_splfmall
 tag @s remove leave_splfmall

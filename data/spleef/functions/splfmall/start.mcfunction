@@ -8,3 +8,6 @@ playsound minecraft:block.note_block.harp master @a[tag=playing_splfmall] ~ ~ ~ 
 effect give @a[tag=playing_splfmall] minecraft:instant_health 1 10
 effect give @a[tag=playing_splfmall] minecraft:saturation 1 10
 scoreboard players reset @a[tag=playing_splfmall] splfOver
+effect clear @a[tag=playing_splfmall]
+effect give @a[tag=playing_splfmall] instant_health 1 10
+effect give @a[tag=playing_splfmall] saturation 1 10
