@@ -3,6 +3,7 @@
 # arena tick functions
 function spleef:splfhockey/tick
 function spleef:splfmall/tick
+function spleef:splftower/tick
 
 # single add 1 to start spleef call
 scoreboard players add @a[scores={start_spleef=1}] start_spleef 1

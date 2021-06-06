@@ -169,7 +169,7 @@ class Spleef:
                     "execute as @a[tag=playing_{0},scores={{start_spleef=1..}}] run scoreboard players add {0} startVoteCntr 1",
                     "execute as @a[tag=playing_{0},scores={{start_spleef=1}}] run tellraw @a[tag=playing_{0}] [{{\"selector\":\"@s\"}},{{\"text\":\" is ready to start!\",\"color\":\"aqua\"}}]",
                     "function spleef:{0}/count_players",
-                    "execute if entity @a[tag=playing_{{0}},scores={{{{start_spleef=1..}}}}] if score {{0}} startVoteCntr = {{0}} splfPlyrCnt if score {{0}} spleefCountdown matches ..-1 positioned {} run function spleef:{{0}}/countdown/initiate".format(
+                    "execute if score {{0}} splfPlyrCnt matches 2.. if entity @a[tag=playing_{{0}},scores={{{{start_spleef=1..}}}}] if score {{0}} startVoteCntr = {{0}} splfPlyrCnt if score {{0}} spleefCountdown matches ..-1 positioned {} run function spleef:{{0}}/countdown/initiate".format(
                         player_pos)
                 ]
             },
@@ -188,6 +188,7 @@ class Spleef:
                     "function spleef:{0}/join_spectators",
                     "scoreboard players set {0} isSplfRunning 0 ",
                     "scoreboard players enable @s leave_spleef",
+                    "advancement grant @s only modular_minigames:win_spleef",
                     "function " + LOAD_FUNC
                 ]
             },
@@ -262,5 +263,21 @@ def generate_herb():
     arena = Arena(arena_name, proper_name, BlockPos(-874, 67, 1174), BlockPos(-758, 128, 1325))
     arena.generate()
 
+def generate_cloud():
+    spleef_items = [
+        """netherite_shovel{{Unbreakable:1b,CanDestroy:[\"minecraft:snow_block\"]}}"""
+    ]
+
+    arena_name = "splftower"
+    proper_name = "The Tower"
+
+    spleef_game = Spleef(arena_name, proper_name, BlockPos(585, 128, 1031), BlockPos(584, 134, 1053), spleef_items)
+
+    spleef_game.gen_spleef()
+
+    arena = Arena(arena_name, proper_name, BlockPos(545, 103, 989), BlockPos(623, 146, 1072))
+    arena.generate()
+
 generate_hockey()
 generate_herb()
+generate_cloud()

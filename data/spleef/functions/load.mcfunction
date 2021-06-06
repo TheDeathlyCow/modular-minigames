@@ -27,4 +27,5 @@ team modify spleef_spec friendlyFire false
 function spleef:template/load
 function spleef:splfhockey/load
 function spleef:splfmall/load
+function spleef:splftower/load
 

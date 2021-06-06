@@ -1,6 +1,7 @@
 {
     "values": [
         "reset:tick",
-        "spleef:tick"
+        "spleef:tick",
+        "bedwars:tick"
     ]
 }

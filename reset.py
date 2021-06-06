@@ -4,7 +4,7 @@ import re
 
 ##* Datapack Functions *##
 
-summon_command = """execute align xz run summon armor_stand {0} {1} {2} {{NoGravity:1b,Marker:1b,Invisible:1b,PersistenceRequired:1b,Tags:["{3}"],ArmorItems:[{{}},{{}},{{id:"minecraft:barrier",Count:1b,tag:{{structure:"{4}"}}}},{{}}]}}\n"""
+summon_command = """execute align xz run summon armor_stand {0} {1} {2} {{{{NoGravity:1b,Marker:1b,Invisible:1b,PersistenceRequired:1b,Tags:["{3}"],ArmorItems:[{{{{}}}},{{{{}}}},{{{{id:"minecraft:barrier",Count:1b,tag:{{{{structure:"{4}"}}}}}}}},{{{{}}}}]}}}}\n"""
 
 summon_cloud_command = """execute align xz run summon area_effect_cloud {0} {1} {2} {{Duration:2147483647,Tags:["{3}"],Potion:"{4}"}}\n"""
 
@@ -69,7 +69,7 @@ class Arena:
                     """execute unless score @s ld.{0} = loadNum ld.{0} run function reset:{0}/load_stand""",
                 ]
             },
-            'save_sand': {
+            'save_stand': {
                 COMMANDS: [
                     'setblock ~ ~ ~ air replace',
                     """setblock ~ ~-1 ~ structure_block[mode=save]{{name:"temp",posX:0,posY:1,posZ:0,sizeX:48,sizeY:48,sizeZ:48,rotation:"NONE",mirror:"NONE",mode:"SAVE",ignoreEntities:0b}} replace""",
@@ -119,13 +119,14 @@ class Arena:
         dy = dy if dy != 0 else 1
         dz = dz if dz != 0 else 1
 
-        x_dir = abs(dx) // dx
-        y_dir = abs(dy) // dy
-        z_dir = abs(dz) // dz
+        x_dir = -abs(dx) // dx
+        y_dir = -abs(dy) // dy
+        z_dir = -abs(dz) // dz
 
         for x in range(self.bound1.x, self.bound2.x, 48 * x_dir):
             for y in range(self.bound1.y, self.bound2.y, 48 * y_dir):
                 for z in range(self.bound1.z, self.bound2.z, 48 * z_dir):
+                    
                     setup_func.append(f"""forceload add {x} {z}\n""")
                     setup_func.append(
                         f"execute positioned {x-1}.0 {y-1}.0 {z-1}.0 run kill @e[dx=1,dy=1,dz=1,tag={{0}}_structmarker]")
@@ -133,8 +134,8 @@ class Arena:
                                                             '{0}_structmarker',
                                                             f'reset:{{0}}/{x}.{y}.{z}'))
         setup_func.append("scoreboard players set loadNum ld.{0} 0")
-        setup_func.append("function reset:{0}/save.mcfunction")
-        setup_func.append("function reset:{0}/tick.mcfunction")
+        setup_func.append("function reset:{0}/save")
+        setup_func.append("function reset:{0}/tick")
         setup_func.append("""forceload remove all""")
         return setup_func
 

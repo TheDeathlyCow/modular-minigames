@@ -1,6 +1,7 @@
 {
     "values": [
         "reset:load",
-        "spleef:load"
+        "spleef:load",
+        "bedwars:load"
     ]
 }
