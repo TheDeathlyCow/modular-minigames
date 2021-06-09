@@ -2,4 +2,5 @@ tellraw @a [{"selector":"@s"},{"text":" has won spleef in The Tower!","color":"a
 function spleef:splftower/join_spectators
 scoreboard players set splftower isSplfRunning 0 
 scoreboard players enable @s leave_spleef
+advancement grant @s only modular_minigames:win_spleef
 function reset:splftower/_load

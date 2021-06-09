@@ -19,7 +19,8 @@ def genteam(team: Team) -> list:
         f"team add {team.technical_name} \"{team.name}\"",
         f"team modify {team.technical_name} color {team.color}",
         f"team modify {team.technical_name} collisionRule pushOtherTeams",
-        f"team modify {team.technical_name} friendlyFire false"
+        f"team modify {team.technical_name} friendlyFire false",
+        f"team modify {team.technical_name} prefix \"[Bed Wars] \""
     ]
     return commands
 

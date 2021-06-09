@@ -4,6 +4,7 @@ gamemode survival @a[tag=bwplaying_template]
 
 scoreboard players set template bwState 1
 
+effect clear @s
 effect give @a[tag=bwplaying_template] saturation 1 10 true 
 effect give @a[tag=bwplaying_template] instant_health 1 10 true 
 

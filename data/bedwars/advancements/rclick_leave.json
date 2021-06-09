@@ -1,0 +1,15 @@
+{
+    "criteria": {
+        "requirement": {
+            "trigger": "minecraft:using_item",
+            "conditions": {
+                "item": {
+                    "nbt": "{bwLeaveClick:1b}"
+                }
+            }
+        }
+    },
+    "rewards": {
+        "function": "bedwars:rclick_leave"
+    }
+}

@@ -2,6 +2,7 @@ tag @s remove bwplaying_template
 tag @s remove bwspectating_template 
 team leave @s 
 teleport @s 0 100 0
+spawnpoint @s 0 100 0
 clear @s
 effect clear @s
 gamemode adventure @s

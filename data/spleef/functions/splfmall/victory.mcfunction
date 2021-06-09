@@ -2,4 +2,5 @@ tellraw @a [{"selector":"@s"},{"text":" has won spleef in TNT Mall!","color":"aq
 function spleef:splfmall/join_spectators
 scoreboard players set splfmall isSplfRunning 0 
 scoreboard players enable @s leave_spleef
+advancement grant @s only modular_minigames:win_spleef
 function reset:splfmall/_load

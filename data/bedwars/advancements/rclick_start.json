@@ -1,0 +1,25 @@
+{
+    "display": {
+        "icon": {
+            "item": "minecraft:stone"
+        },
+        "title": "",
+        "description": "",
+        "show_toast": false,
+        "announce_to_chat": false,
+        "hidden": true
+    },
+    "criteria": {
+        "requirement": {
+            "trigger": "minecraft:using_item",
+            "conditions": {
+                "item": {
+                    "nbt": "{bwStartClick:1b}"
+                }
+            }
+        }
+    },
+    "rewards": {
+        "function": "bedwars:rclick_start"
+    }
+}
