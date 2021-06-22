@@ -55,7 +55,7 @@
             "entries": [
                 {
                     "type": "minecraft:loot_table",
-                    "name": "bedwars:loot/blocks"
+                    "name": "bedwars:good_loot/blocks"
                 }
             ]
         }

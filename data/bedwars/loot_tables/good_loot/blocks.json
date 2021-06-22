@@ -6,20 +6,20 @@
             "entries": [
                 {
                     "type": "minecraft:item",
-                    "name": "minecraft:netherite_ingot"
+                    "name": "minecraft:netherite_scrap"
                 }
             ],
             "conditions": [
                 {
                     "condition": "minecraft:random_chance",
-                    "chance": 0.1
+                    "chance": 0.05
                 }
             ]
         },
         {
             "rolls": {
-                "min": 5,
-                "max": 7
+                "min": 1,
+                "max": 5
             },
             "entries": [
                 {
@@ -30,8 +30,8 @@
                         {
                             "function": "minecraft:set_count",
                             "count": {
-                                "min": 3,
-                                "max": 12
+                                "min": 5,
+                                "max": 25
                             }
                         }
                     ]
@@ -45,7 +45,7 @@
                             "function": "minecraft:set_count",
                             "count": {
                                 "min": 5,
-                                "max": 10
+                                "max": 25
                             }
                         }
                     ]
@@ -59,7 +59,21 @@
                             "function": "minecraft:set_count",
                             "count": {
                                 "min": 5,
-                                "max": 9
+                                "max": 25
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "minecraft:item",
+                    "weight": 4,
+                    "name": "minecraft:dirt",
+                    "functions": [
+                        {
+                            "function": "minecraft:set_count",
+                            "count": {
+                                "min": 5,
+                                "max": 25
                             }
                         }
                     ]

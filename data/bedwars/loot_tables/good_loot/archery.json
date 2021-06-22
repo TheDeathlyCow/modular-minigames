@@ -12,15 +12,15 @@
             {
               "function": "minecraft:set_count",
               "count": {
-                "min": 4,
-                "max": 8
+                "min": 8,
+                "max": 16
               }
             }
           ]
         },
         {
           "type": "minecraft:item",
-          "weight": 2,
+          "weight": 3,
           "name": "minecraft:crossbow"
         },
         {
@@ -49,7 +49,7 @@
         {
           "type": "minecraft:item",
           "weight": 5,
-          "name": "minecraft:arrow",
+          "name": "minecraft:spectral_arrow",
           "functions": [
             {
               "function": "minecraft:set_count",
@@ -67,7 +67,7 @@
       "entries": [
         {
           "type": "minecraft:loot_table",
-          "name": "bedwars:loot/blocks"
+          "name": "bedwars:good_loot/blocks"
         }
       ]
     }

@@ -1,0 +1,15 @@
+{
+    "criteria": {
+        "requirement": {
+            "trigger": "minecraft:using_item",
+            "conditions": {
+                "item": {
+                    "nbt": "{splfStartClick:1b}"
+                }
+            }
+        }
+    },
+    "rewards": {
+        "function": "spleef:rclick_start"
+    }
+}

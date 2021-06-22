@@ -8,5 +8,3 @@ scoreboard players enable @s leave_bedwars
 teleport @s 1061 128 -13
 spawnpoint @s 1061 128 -13
 
-# tellraw @s [{"text":"Type ","color":"aqua"},{"text":"/trigger leave_bedwars","color":"dark_purple"},{"text":" when you are ready to leave."}]
-give @s shield{display:{Name:'{"text":"Right Click to Leave","color":"red","italic":false}'},bwLeaveClick:1b} 1

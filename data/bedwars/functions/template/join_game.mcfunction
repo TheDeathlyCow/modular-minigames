@@ -18,8 +18,8 @@ execute if score green template.tq matches 0 positioned 1089 117 -13 run functio
 execute if score blue template.tq matches 0 positioned 1061 117 -40 run function bedwars:template/team_queue/join_blue
 
 # give start vote item
-give @s shield{display:{Name:'{"text":"Right Click to Start","color":"gold","italic":false}'},bwStartClick:1b} 1
-give @s shield{display:{Name:'{"text":"Right Click to Leave","color":"red","italic":false}'},bwLeaveClick:1b} 1
+item replace entity @s hotbar.7 with shield{display:{Name:'{"text":"Right Click to Start","color":"green","italic":false}'},bwStartClick:1b,BlockEntityTag:{Base:5}} 1
+item replace entity @s hotbar.8 with shield{display:{Name:'{"text":"Right Click to Leave","color":"red","italic":false}'},bwLeaveClick:1b,BlockEntityTag:{Base:14,Patterns:[{Color:0,Pattern:"mr"},{Color:14,Pattern:"vh"}]}} 1
 
 # update queue
 function bedwars:template/team_queue/shift_queue

@@ -8,6 +8,7 @@ scoreboard objectives add startVoteCntr dummy
 scoreboard objectives add start_spleef trigger
 scoreboard objectives add leave_spleef trigger
 scoreboard objectives add spleefCountdown dummy
+scoreboard objectives add splfTimer dummy
 
 # spleef player team
 team add spleef_plyr

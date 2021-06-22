@@ -35,7 +35,7 @@
           "functions": [
             {
               "function": "minecraft:set_nbt",
-              "tag": "{Potion:\"minecraft:long_weakness\"}"
+              "tag": "{Potion:\"minecraft:weakness\"}"
             },
             {
               "function": "minecraft:set_count",
@@ -48,7 +48,7 @@
         },
         {
           "type": "minecraft:item",
-          "weight": 5,
+          "weight": 7,
           "name": "minecraft:arrow",
           "functions": [
             {
