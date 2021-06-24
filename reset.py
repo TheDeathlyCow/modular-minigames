@@ -4,7 +4,8 @@ import re
 
 ##* Datapack Functions *##
 
-summon_command = """execute align xz run summon armor_stand {0} {1} {2} {{{{NoGravity:1b,Marker:1b,Invisible:1b,PersistenceRequired:1b,Tags:["{3}"],ArmorItems:[{{{{}}}},{{{{}}}},{{{{id:"minecraft:barrier",Count:1b,tag:{{{{structure:"{4}"}}}}}}}},{{{{}}}}]}}}}\n"""
+# summon_command = """execute align xz run summon armor_stand {0} {1} {2} {{{{NoGravity:1b,Marker:1b,Invisible:1b,PersistenceRequired:1b,Tags:["{3}"],ArmorItems:[{{{{}}}},{{{{}}}},{{{{id:"minecraft:barrier",Count:1b,tag:{{{{structure:"{4}"}}}}}}}},{{{{}}}}]}}}}\n"""
+summon_command = """execute align xz run summon marker {0} {1} {2} {{{{Tags:["{3}"],data:{{{{"structure":"{4}"}}}}}}}}\n"""
 
 summon_cloud_command = """execute align xz run summon area_effect_cloud {0} {1} {2} {{Duration:2147483647,Tags:["{3}"],Potion:"{4}"}}\n"""
 
@@ -54,7 +55,7 @@ class Arena:
             },
             'tick': {
                 COMMANDS: [
-                    """execute as @e[type=armor_stand,tag={0}_structmarker] at @s run function reset:{0}/as_stand""",
+                    """execute as @e[type=marker,tag={0}_structmarker] at @s run function reset:{0}/as_stand""",
                     'execute as @a[tag=playing_{0}] at @s unless score @s ld.{0} = loadNum ld.{0} run function reset:{0}/_leave_player'
                 ],
                 COMMENTS: [
@@ -73,15 +74,15 @@ class Arena:
                 COMMANDS: [
                     'setblock ~ ~ ~ air replace',
                     """setblock ~ ~-1 ~ structure_block[mode=save]{{name:"temp",posX:0,posY:1,posZ:0,sizeX:48,sizeY:48,sizeZ:48,rotation:"NONE",mirror:"NONE",mode:"SAVE",ignoreEntities:0b}} replace""",
-                    """data modify block ~ ~-1 ~ name set from entity @s ArmorItems[2].tag.structure""",
+                    """data modify block ~ ~-1 ~ name set from entity @s data.structure""",
                     """scoreboard players operation @s sv.{0} = saveNum sv.{0}"""
                 ]
             },
             'load_stand': {
                 COMMANDS: [
                     """setblock ~ ~ ~ structure_block[mode=load]{{name:"temp",posX:0,posY:0,posZ:0,sizeX:48,sizeY:48,sizeZ:48,rotation:"NONE",mirror:"NONE",mode:"LOAD",ignoreEntities:0b}} replace""",
-                    """data modify block ~ ~ ~ name set from entity @s ArmorItems[2].tag.structure""",
-                    "teleport @e[type=!player,type=!armor_stand,dx=48,dy=48,dz=48] ~ -100 ~",
+                    """data modify block ~ ~ ~ name set from entity @s data.structure""",
+                    "teleport @e[type=!player,type=!marker,dx=48,dy=48,dz=48] ~ -100 ~",
                     "setblock ~ ~1 ~ redstone_block",
                     "teleport @e[type=item,dx=48,dy=48,dz=48] ~ -100 ~",
                     "scoreboard players operation @s ld.{0} = loadNum ld.{0}"
@@ -129,7 +130,7 @@ class Arena:
                     
                     setup_func.append(f"""forceload add {x} {z}\n""")
                     setup_func.append(
-                        f"execute positioned {x-1}.0 {y-1}.0 {z-1}.0 run kill @e[dx=1,dy=1,dz=1,tag={{0}}_structmarker]")
+                        f"execute positioned {x-1}.0 {y-1}.0 {z-1}.0 run kill @e[distance=..1,tag={{0}}_structmarker]")
                     setup_func.append(summon_command.format(x, y, z,
                                                             '{0}_structmarker',
                                                             f'reset:{{0}}/{x}.{y}.{z}'))

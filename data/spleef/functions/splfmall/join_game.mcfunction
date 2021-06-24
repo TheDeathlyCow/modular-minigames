@@ -1,7 +1,7 @@
 team join spleef_plyr @s
 tag @s add playing_splfmall
-teleport @s -820 91 1260
-spawnpoint @s -820 91 1260
+teleport @s -847 31 -512
+spawnpoint @s -847 31 -512
 scoreboard players enable @s start_spleef
 scoreboard players enable @s leave_spleef
 tag @s remove spectating_splfmall

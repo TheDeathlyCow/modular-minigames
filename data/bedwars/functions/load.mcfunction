@@ -22,3 +22,4 @@ team modify bwSpec seeFriendlyInvisibles false
 
 function bedwars:load_teams
 function bedwars:template/load
+function bedwars:bwcastle/load

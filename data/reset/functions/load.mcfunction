@@ -2,3 +2,4 @@
 function reset:splfhockey/reload
 function reset:splfmall/reload
 function reset:splftower/reload
+function reset:bwcastle/reload

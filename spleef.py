@@ -255,16 +255,12 @@ def generate_hockey():
     proper_name = "TotallyNotHockey"
 
     spleef_game = Spleef(arena_name, proper_name, BlockPos(
-        1122, 94, -471), BlockPos(1122, 104, -509), spleef_items)
+        -915, 21, -928), BlockPos(-915, 22, -900), spleef_items)
 
-    spleef_arena_bounds = [
-        (1208, 76, -393),
-        (964, 152, -613)
-    ]
 
     spleef_game.gen_spleef()
     arena = Arena(arena_name, proper_name, BlockPos(
-        1208, 76, -393), BlockPos(964, 152, -613))
+        -967, 4, -965), BlockPos(-867, 36, -895))
     arena.generate()
 
 
@@ -277,13 +273,13 @@ def generate_herb():
     arena_name = "splfmall"
     proper_name = "TNT Mall"
 
-    spleef_game = Spleef(arena_name, proper_name, BlockPos(-820,
-                         91, 1260), BlockPos(-841, 91, 1260), spleef_items)
+    spleef_game = Spleef(arena_name, proper_name, BlockPos(
+        -847, 31, -512), BlockPos(-827, 32, -512), spleef_items)
 
     spleef_game.gen_spleef()
 
-    arena = Arena(arena_name, proper_name, BlockPos(-874,
-                  67, 1174), BlockPos(-758, 128, 1325))
+    arena = Arena(arena_name, proper_name, BlockPos(
+        -870, 20, -535), BlockPos(-822, 47, -480))
     arena.generate()
 
 
@@ -296,12 +292,12 @@ def generate_cloud():
     proper_name = "The Tower"
 
     spleef_game = Spleef(arena_name, proper_name, BlockPos(
-        585, 128, 1031), BlockPos(584, 134, 1053), spleef_items)
+        -799, 25, -236), BlockPos(-799, 31, -212), spleef_items)
 
     spleef_game.gen_spleef()
 
     arena = Arena(arena_name, proper_name, BlockPos(
-        545, 103, 989), BlockPos(623, 146, 1072))
+        -834, 1, -264), BlockPos(-771, 43, -207))
     arena.generate()
 
 

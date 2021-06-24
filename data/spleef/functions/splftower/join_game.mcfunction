@@ -1,7 +1,7 @@
 team join spleef_plyr @s
 tag @s add playing_splftower
-teleport @s 585 128 1031
-spawnpoint @s 585 128 1031
+teleport @s -799 25 -236
+spawnpoint @s -799 25 -236
 scoreboard players enable @s start_spleef
 scoreboard players enable @s leave_spleef
 tag @s remove spectating_splftower

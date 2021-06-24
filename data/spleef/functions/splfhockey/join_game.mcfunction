@@ -1,7 +1,7 @@
 team join spleef_plyr @s
 tag @s add playing_splfhockey
-teleport @s 1122 94 -471
-spawnpoint @s 1122 94 -471
+teleport @s -915 21 -928
+spawnpoint @s -915 21 -928
 scoreboard players enable @s start_spleef
 scoreboard players enable @s leave_spleef
 tag @s remove spectating_splfhockey

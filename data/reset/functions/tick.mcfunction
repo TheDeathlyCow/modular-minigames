@@ -2,3 +2,4 @@
 function reset:splfhockey/tick
 function reset:splfmall/tick
 function reset:splftower/tick
+function reset:bwcastle/tick

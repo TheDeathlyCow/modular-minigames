@@ -1,8 +1,8 @@
 #executes as a player wanting to leave, at their position
 
 team leave @s
-teleport @s 0 100 0
-spawnpoint @s 0 100 0
+teleport @s 0 16 0
+spawnpoint @s 0 16 0
 tag @s remove spectating_splfhockey
 tag @s remove playing_splfhockey
 tag @s remove leave_splfhockey

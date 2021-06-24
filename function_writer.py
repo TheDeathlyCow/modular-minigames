@@ -11,7 +11,7 @@ class BlockPos:
     
     __repr__ = __str__
 
-HUB_COORDINATES = BlockPos(0, 100, 0)
+HUB_COORDINATES = BlockPos(0, 16, 0)
 COMMANDS = 'commands'
 COMMENTS = 'comments'
 
