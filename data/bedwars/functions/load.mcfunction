@@ -11,7 +11,7 @@ scoreboard objectives add bwCntDwn dummy
 scoreboard objectives add bwNumTeams dummy
 scoreboard objectives add bwState dummy
 scoreboard objectives add bwDied deathCount
-scoreboard objectives add bwHealth health
+scoreboard objectives add bwHealth dummy
 scoreboard objectives add start_bedwars trigger
 scoreboard objectives add leave_bedwars trigger
 

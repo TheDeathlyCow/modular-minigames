@@ -122,11 +122,6 @@
                 {
                     "type": "minecraft:item",
                     "weight": 5,
-                    "name": "minecraft:cobweb"
-                },
-                {
-                    "type": "minecraft:item",
-                    "weight": 5,
                     "name": "minecraft:fire_charge",
                     "functions": [
                         {

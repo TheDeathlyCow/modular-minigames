@@ -1,4 +1,4 @@
-tag @s remove bwplaying_bwcastle
+tag @s remove playing_bwcastle
 tag @s remove bwspectating_bwcastle
 team leave @s
 teleport @s 0 16 0

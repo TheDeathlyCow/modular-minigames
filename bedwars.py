@@ -26,12 +26,12 @@ class BedWarsTeam:
     def checkspawn(self) -> str:
         return textwrap.dedent(f"""\
             execute if score {self.color} {{0}}.bd matches 0 positioned {self.bed_pos} unless block ~ ~ ~ #minecraft:beds run function bedwars:{{0}}/bed_destroyed/{self.color}
-            execute if score {self.color} {{0}}.bd matches 0 positioned {self.bed_pos} as @a[tag=bwplaying_{{0}},team=bw{self.color},scores={{{{bwDied=1..,bwHealth=1..}}}}] run function bedwars:{{0}}/respawn/{self.color}
-            execute if score {self.color} {{0}}.bd matches 1 as @a[tag=bwplaying_{{0}},team=bw{self.color},scores={{{{bwDied=1..}}}}] at @s run function bedwars:{{0}}/eliminate""")
+            execute if score {self.color} {{0}}.bd matches 0 positioned {self.bed_pos} as @a[tag=playing_{{0}},team=bw{self.color},scores={{{{bwDied=1..,bwHealth=1..}}}}] run function bedwars:{{0}}/respawn/{self.color}
+            execute if score {self.color} {{0}}.bd matches 1 as @a[tag=playing_{{0}},team=bw{self.color},scores={{{{bwDied=1..}}}}] at @s run function bedwars:{{0}}/eliminate""")
 
     def checkvictory(self) -> str:
         return textwrap.dedent(f"""\
-            execute if entity @a[tag=bwplaying_{{0}},team=bw{self.color}] unless entity @a[tag=bwplaying_{{0}},team=!bw{self.color}] run function bedwars:{{0}}/victory/{self.color}""")
+            execute if entity @a[tag=playing_{{0}},team=bw{self.color}] unless entity @a[tag=playing_{{0}},team=!bw{self.color}] run function bedwars:{{0}}/victory/{self.color}""")
 
     def join_game(self) -> str:
         return f"""execute if score {self.color} {{0}}.tq matches 0 positioned {self.bed_pos} run function bedwars:{{0}}/team_queue/join_{self.color}"""
@@ -53,8 +53,8 @@ class BedWars:
                     textwrap.dedent("""\
                         loot give @s loot bedwars:basic_weapons
                         item replace entity @s weapon.offhand with minecraft:shield
-                        item replace entity @p armor.legs with chainmail_leggings 1
-                        item replace entity @p armor.feet with chainmail_boots 1
+                        item replace entity @s armor.legs with chainmail_leggings 1
+                        item replace entity @s armor.feet with chainmail_boots 1
                         scoreboard players reset @s bwDied""")
                 ]
             }
@@ -80,12 +80,13 @@ class BedWars:
                     *[f"scoreboard players set {team.color} {{0}}.bd 0" for team in self.teams],
                     textwrap.dedent("""\
                         scoreboard players set {0} bwState 0
-                        clear @a[tag=bwplaying_{0}]
-                        team leave @a[tag=bwplaying_{0}]
-                        effect give @a[tag=bwplaying_{0}] saturation 1 10 true 
-                        effect give @a[tag=bwplaying_{0}] instant_health 1 10 true 
-                        advancement grant @a[tag=bwplaying_{0}] only modular_minigames:win_bedwars
-                        execute as @a[tag=bwplaying_{0}] run function bedwars:{0}/join_spectators"""),
+                        clear @a[tag=playing_{0}]
+                        team leave @a[tag=playing_{0}]
+                        effect give @a[tag=playing_{0}] saturation 1 10 true 
+                        effect give @a[tag=playing_{0}] instant_health 1 10 true 
+                        advancement grant @a[tag=playing_{0}] only modular_minigames:win_bedwars
+                        execute as @a[tag=playing_{0}] run function bedwars:{0}/_leave
+                        execute as @a[tag=spectating_{0}] run function bedwars:{0}/_leave"""),
                     "function " + LOAD_FUNC 
                 ]
             }
@@ -103,11 +104,11 @@ class BedWars:
             self._bed_destroyed[team.color] = {
                 COMMANDS: [
                     textwrap.dedent(f"""\
-                        tellraw @a[tag=bwplaying_{{0}}] [{{{{"text":"The {team.color} team's bed has been destroyed!","color":"aqua"}}}}]
-                        tellraw @a[tag=bwspectating_{{0}}] [{{{{"text":"The {team.color} team's bed has been destroyed!","color":"aqua"}}}}]
+                        tellraw @a[tag=playing_{{0}}] [{{{{"text":"The {team.color} team's bed has been destroyed!","color":"aqua"}}}}]
+                        tellraw @a[tag=spectating_{{0}}] [{{{{"text":"The {team.color} team's bed has been destroyed!","color":"aqua"}}}}]
                         summon lightning_bolt ~ ~10 ~
-                        spawnpoint @a[tag=bwplaying_{{0}},team=bw{team.color}] {self.spectator_pos}
-                        scoreboard players reset @a[tag=bwplaying_{{0}},team=bw{team.color}] bwDied
+                        spawnpoint @a[tag=playing_{{0}},team=bw{team.color}] {self.spectator_pos}
+                        scoreboard players reset @a[tag=playing_{{0}},team=bw{team.color}] bwDied
                         scoreboard players set {team.color} {{0}}.bd 1""")
                 ]
             }
@@ -119,7 +120,7 @@ class BedWars:
                     textwrap.dedent(f"""\
                         item replace entity @s armor.head with leather_helmet{{{{display:{{{{color:{COLOR_MAP[team.color]}}}}}}}}} 1
                         item replace entity @s armor.chest with leather_chestplate{{{{display:{{{{color:{COLOR_MAP[team.color]}}}}}}}}} 1"""),
-                    f"spreadplayers ~ ~ 0 10 under {self.spectator_pos.y + 1} true @s"
+                    f"spreadplayers ~ ~ 0 10 under {team.bed_pos.y + 1} true @s"
                 ]
             }
 
@@ -128,7 +129,7 @@ class BedWars:
                     textwrap.dedent(f"""\
                         team join bw{team.color} @s 
                         function bedwars:{{0}}/respawn/{team.color}
-                        tellraw @a[tag=bwplaying_{{0}}] [{{{{"selector":"@s","color":"dark_aqua","bold":true}}}},{{{{"text":" has joined the {team.color} team!","color":"aqua","bold":false}}}}]"""),
+                        tellraw @a[tag=playing_{{0}}] [{{{{"selector":"@s","color":"dark_aqua","bold":true}}}},{{{{"text":" has joined the {team.color} team!","color":"aqua","bold":false}}}}]"""),
                     *[f"give @s {i} {c} " for i, c in team.respawn_items]
                 ]
             }
@@ -144,7 +145,7 @@ class BedWars:
             },
             "_leave": {
                 COMMANDS: [
-                    "tag @s remove bwplaying_{0}",
+                    "tag @s remove playing_{0}",
                     "tag @s remove bwspectating_{0}",
                     "team leave @s",
                     f"teleport @s {HUB_COORDINATES}",
@@ -157,7 +158,7 @@ class BedWars:
                 ]
             },
             "check_spawnpoints": {
-                COMMANDS: [
+                COMMANDS: ["execute as @a[tag=playing_{0}] store result score @s bwHealth run data get entity @s Health"] + [
                     t.checkspawn() for t in self.teams
                 ]
             },
@@ -169,7 +170,7 @@ class BedWars:
             "count_players": {
                 COMMANDS: [
                     "scoreboard players set {0} bwPlyrCnt 0",
-                    "execute as @a[tag=bwplaying_{0}] run scoreboard players add {0} bwPlyrCnt 1"
+                    "execute as @a[tag=playing_{0}] run scoreboard players add {0} bwPlyrCnt 1"
                 ]
             },
             "countdown": {
@@ -177,27 +178,27 @@ class BedWars:
                     textwrap.dedent("""\
                         scoreboard players remove {0} bwCntDwn 1
 
-                        execute if score {0} bwCntDwn matches 300 run tellraw @a[tag=bwplaying_{0}] [{{"text":"The game will start in ","color":"aqua"}},{{"text":"15","color":"dark_purple"}},{{"text":" seconds!"}}]
-                        execute if score {0} bwCntDwn matches 300 run tellraw @a[tag=bwspectating_{0}] [{{"text":"The game will start in ","color":"aqua"}},{{"text":"15","color":"dark_purple"}},{{"text":" seconds!"}}]
-                        execute if score {0} bwCntDwn matches 300 as @a[tag=bwplaying_{0}] at @s run playsound minecraft:block.note_block.hat master @s ~ ~ ~ 1
+                        execute if score {0} bwCntDwn matches 300 run tellraw @a[tag=playing_{0}] [{{"text":"The game will start in ","color":"aqua"}},{{"text":"15","color":"dark_purple"}},{{"text":" seconds!"}}]
+                        execute if score {0} bwCntDwn matches 300 run tellraw @a[tag=spectating_{0}] [{{"text":"The game will start in ","color":"aqua"}},{{"text":"15","color":"dark_purple"}},{{"text":" seconds!"}}]
+                        execute if score {0} bwCntDwn matches 300 as @a[tag=playing_{0}] at @s run playsound minecraft:block.note_block.hat master @s ~ ~ ~ 1
 
-                        execute if score {0} bwCntDwn matches 200 run tellraw @a[tag=bwplaying_{0}] [{{"text":"The game will start in ","color":"aqua"}},{{"text":"10","color":"dark_purple"}},{{"text":" seconds!"}}]
-                        execute if score {0} bwCntDwn matches 200 as @a[tag=bwplaying_{0}] at @s run playsound minecraft:block.note_block.hat master @s ~ ~ ~ 1
+                        execute if score {0} bwCntDwn matches 200 run tellraw @a[tag=playing_{0}] [{{"text":"The game will start in ","color":"aqua"}},{{"text":"10","color":"dark_purple"}},{{"text":" seconds!"}}]
+                        execute if score {0} bwCntDwn matches 200 as @a[tag=playing_{0}] at @s run playsound minecraft:block.note_block.hat master @s ~ ~ ~ 1
 
-                        execute if score {0} bwCntDwn matches 100 run tellraw @a[tag=bwplaying_{0}] [{{"text":"The game will start in ","color":"aqua"}},{{"text":"5","color":"dark_purple"}},{{"text":" seconds!"}}]
-                        execute if score {0} bwCntDwn matches 100 as @a[tag=bwplaying_{0}] at @s run playsound minecraft:block.note_block.hat master @s ~ ~ ~ 1
+                        execute if score {0} bwCntDwn matches 100 run tellraw @a[tag=playing_{0}] [{{"text":"The game will start in ","color":"aqua"}},{{"text":"5","color":"dark_purple"}},{{"text":" seconds!"}}]
+                        execute if score {0} bwCntDwn matches 100 as @a[tag=playing_{0}] at @s run playsound minecraft:block.note_block.hat master @s ~ ~ ~ 1
 
-                        execute if score {0} bwCntDwn matches 80 run tellraw @a[tag=bwplaying_{0}] [{{"text":"The game will start in ","color":"aqua"}},{{"text":"4","color":"dark_purple"}},{{"text":" seconds!"}}]
-                        execute if score {0} bwCntDwn matches 80 as @a[tag=bwplaying_{0}] at @s run playsound minecraft:block.note_block.hat master @s ~ ~ ~ 1
+                        execute if score {0} bwCntDwn matches 80 run tellraw @a[tag=playing_{0}] [{{"text":"The game will start in ","color":"aqua"}},{{"text":"4","color":"dark_purple"}},{{"text":" seconds!"}}]
+                        execute if score {0} bwCntDwn matches 80 as @a[tag=playing_{0}] at @s run playsound minecraft:block.note_block.hat master @s ~ ~ ~ 1
 
-                        execute if score {0} bwCntDwn matches 60 run tellraw @a[tag=bwplaying_{0}] [{{"text":"The game will start in ","color":"aqua"}},{{"text":"3","color":"dark_purple"}},{{"text":" seconds!"}}]
-                        execute if score {0} bwCntDwn matches 60 as @a[tag=bwplaying_{0}] at @s run playsound minecraft:block.note_block.hat master @s ~ ~ ~ 1
+                        execute if score {0} bwCntDwn matches 60 run tellraw @a[tag=playing_{0}] [{{"text":"The game will start in ","color":"aqua"}},{{"text":"3","color":"dark_purple"}},{{"text":" seconds!"}}]
+                        execute if score {0} bwCntDwn matches 60 as @a[tag=playing_{0}] at @s run playsound minecraft:block.note_block.hat master @s ~ ~ ~ 1
 
-                        execute if score {0} bwCntDwn matches 40 run tellraw @a[tag=bwplaying_{0}] [{{"text":"The game will start in ","color":"aqua"}},{{"text":"2","color":"dark_purple"}},{{"text":" seconds!"}}]
-                        execute if score {0} bwCntDwn matches 40 as @a[tag=bwplaying_{0}] at @s run playsound minecraft:block.note_block.hat master @s ~ ~ ~ 1
+                        execute if score {0} bwCntDwn matches 40 run tellraw @a[tag=playing_{0}] [{{"text":"The game will start in ","color":"aqua"}},{{"text":"2","color":"dark_purple"}},{{"text":" seconds!"}}]
+                        execute if score {0} bwCntDwn matches 40 as @a[tag=playing_{0}] at @s run playsound minecraft:block.note_block.hat master @s ~ ~ ~ 1
 
-                        execute if score {0} bwCntDwn matches 20 run tellraw @a[tag=bwplaying_{0}] [{{"text":"The game will start in ","color":"aqua"}},{{"text":"1","color":"dark_purple"}},{{"text":" seconds!"}}]
-                        execute if score {0} bwCntDwn matches 20 as @a[tag=bwplaying_{0}] at @s run playsound minecraft:block.note_block.hat master @s ~ ~ ~ 1
+                        execute if score {0} bwCntDwn matches 20 run tellraw @a[tag=playing_{0}] [{{"text":"The game will start in ","color":"aqua"}},{{"text":"1","color":"dark_purple"}},{{"text":" seconds!"}}]
+                        execute if score {0} bwCntDwn matches 20 as @a[tag=playing_{0}] at @s run playsound minecraft:block.note_block.hat master @s ~ ~ ~ 1
 
                         execute if score {0} bwCntDwn matches 0 run function bedwars:{0}/start""")
                 ]
@@ -205,12 +206,12 @@ class BedWars:
             "eliminate": {
                 COMMANDS: [
                     textwrap.dedent(f"""\
-                        tellraw @a[tag=bwplaying_{{0}}] [{{{{"selector":"@s","bold":true,"color":"dark_purple"}}}},{{{{"text":" has been eliminated from {self.proper_name}!","bold":false,"color":"aqua"}}}}]
-                        tellraw @a[tag=bwspectating_{{0}}] [{{{{"selector":"@s","bold":true,"color":"dark_purple"}}}},{{{{"text":" has been eliminated from {self.proper_name}!","bold":false,"color":"aqua"}}}}]
+                        tellraw @a[tag=playing_{{0}}] [{{{{"selector":"@s","bold":true,"color":"dark_purple"}}}},{{{{"text":" has been eliminated from {self.proper_name}!","bold":false,"color":"aqua"}}}}]
+                        tellraw @a[tag=spectating_{{0}}] [{{{{"selector":"@s","bold":true,"color":"dark_purple"}}}},{{{{"text":" has been eliminated from {self.proper_name}!","bold":false,"color":"aqua"}}}}]
                         summon lightning_bolt ~ ~10 ~
                         
                         team leave @s
-                        tag @s remove bwplaying_{{0}}
+                        tag @s remove playing_{{0}}
                         function bedwars:{{0}}/join_spectators
                         scoreboard players reset @s bwDied""")
                 ]
@@ -218,7 +219,7 @@ class BedWars:
             "ingame_tick": {
                 COMMANDS: [
                     textwrap.dedent("""\
-                        clear @a[tag=bwplaying_{0}] #minecraft:beds
+                        clear @a[tag=playing_{0}] #minecraft:beds
                         function bedwars:{0}/check_victory
 
                         function bedwars:{0}/check_spawnpoints""")
@@ -229,16 +230,16 @@ class BedWars:
                     textwrap.dedent("""\
                         scoreboard players set {0} bwCntDwn 301
                         scoreboard players set {0} bwState 2
-                        scoreboard players reset @a[tag=bwplaying_{0}] leave_bedwars
-                        scoreboard players reset @a[tag=bwplaying_{0}] start_bedwars
-                        clear @a[tag=bwplaying_{0}] shield{{bwStartClick:1b}}
-                        clear @a[tag=bwplaying_{0}] shield{{bwLeaveClick:1b}}""")
+                        scoreboard players reset @a[tag=playing_{0}] leave_bedwars
+                        scoreboard players reset @a[tag=playing_{0}] start_bedwars
+                        clear @a[tag=playing_{0}] shield{{bwStartClick:1b}}
+                        clear @a[tag=playing_{0}] shield{{bwLeaveClick:1b}}""")
                 ]
             },
             "join_game": {
                 COMMANDS: [
                     textwrap.dedent("""\
-                        tag @s add bwplaying_{0}
+                        tag @s add playing_{0}
                         effect clear @s
                         effect give @s instant_health 1 9 
                         effect give @s saturation 1 9
@@ -260,7 +261,7 @@ class BedWars:
                     textwrap.dedent(f"""\
                         function reset:{{0}}/_join_spectator
                         team join bwSpec @s
-                        tag @s remove bwplaying_{{0}}
+                        tag @s remove playing_{{0}}
                         tag @s add bwspectating_{{0}}
                         effect clear @s
                         effect give @s invisibility 99999 0 true
@@ -288,18 +289,19 @@ class BedWars:
             },
             "start": {
                 COMMANDS: [
+                    *[f"scoreboard players set {team.color} {{0}}.bd 0" for team in self.teams],
                     textwrap.dedent("""\
-                        execute as @a[tag=bwplaying_{0}] at @s run playsound minecraft:block.note_block.pling master @s ~ ~ ~ 1
-                        tellraw @a[tag=bwplaying_{0}] [{{"text":"The game has begun! Your gamemodes have been updated.","color":"aqua"}}]
-                        gamemode survival @a[tag=bwplaying_{0}]
+                        execute as @a[tag=playing_{0}] at @s run playsound minecraft:block.note_block.pling master @s ~ ~ ~ 1
+                        tellraw @a[tag=playing_{0}] [{{"text":"The game has begun! Your gamemodes have been updated.","color":"aqua"}}]
+                        gamemode survival @a[tag=playing_{0}]
 
                         scoreboard players set {0} bwState 1
 
                         effect clear @s
-                        effect give @a[tag=bwplaying_{0}] saturation 1 10 true 
-                        effect give @a[tag=bwplaying_{0}] instant_health 1 10 true 
+                        effect give @a[tag=playing_{0}] saturation 1 10 true 
+                        effect give @a[tag=playing_{0}] instant_health 1 10 true 
 
-                        scoreboard players reset @a[tag=bwplaying_{0}] bwDied""")
+                        scoreboard players reset @a[tag=playing_{0}] bwDied""")
                 ]
             },
             "tick": {
@@ -308,15 +310,16 @@ class BedWars:
                         execute if score {0} bwState matches 0 run function bedwars:{0}/wait
                         execute if score {0} bwState matches 1 run function bedwars:{0}/ingame_tick
                         execute if score {0} bwState matches 2 run function bedwars:{0}/countdown
+                        
 
-
-                        execute as @a[scores={{leave_bedwars=1..}},tag=bwplaying_{0}] run function bedwars:{0}/_leave
-                        execute as @a[scores={{leave_bedwars=1..}},tag=bwspectating_{0}] run function bedwars:{0}/_leave
+                        scoreboard players set @a[tag=leave_{0}] leave_bedwars 1
+                        execute as @a[scores={{leave_bedwars=1..}},tag=playing_{0}] run function bedwars:{0}/_leave
+                        execute as @a[scores={{leave_bedwars=1..}},tag=spectating_{0}] run function bedwars:{0}/_leave
 
                         execute unless score {0} bwState matches 0 run function bedwars:{0}/count_players
-                        execute unless score {0} bwState matches 0 if score {0} bwPlyrCnt matches 0 run function bedwars:victory/victory
+                        execute unless score {0} bwState matches 0 if score {0} bwPlyrCnt matches 0 run function bedwars:{0}/victory/victory
 
-                        item replace entity @a[tag=bwspectating_{0},nbt=!{{Inventory:[{{id:"shield"}}]}}] hotbar.8 with shield{{display:{{Name:'{{"text":"Right Click to Leave","color":"red","italic":false}}'}},bwLeaveClick:1b,BlockEntityTag:{{Base:14,Patterns:[{{Color:0,Pattern:"mr"}},{{Color:14,Pattern:"vh"}}]}}}} 1""")
+                        item replace entity @a[tag=spectating_{0},nbt=!{{Inventory:[{{id:"shield"}}]}}] hotbar.8 with shield{{display:{{Name:'{{"text":"Right Click to Leave","color":"red","italic":false}}'}},bwLeaveClick:1b,BlockEntityTag:{{Base:14,Patterns:[{{Color:0,Pattern:"mr"}},{{Color:14,Pattern:"vh"}}]}}}} 1""")
                 ]
             },
             "wait": {
@@ -324,11 +327,11 @@ class BedWars:
                     textwrap.dedent(f"""\
                         function bedwars:{{0}}/count_players
                         scoreboard players set {{0}} bwRdyPlyrs 0 
-                        execute as @a[tag=bwplaying_{{0}},scores={{{{start_bedwars=1}}}}] run tellraw @a[tag=bwplaying_{{0}}] [{{{{"selector":"@s","color":"dark_purple"}}}},{{{{"text":" is ready to start!","color":"aqua"}}}}]
-                        scoreboard players set @a[tag=bwplaying_{{0}},scores={{{{start_bedwars=1}}}}] start_bedwars 2
-                        execute as @a[tag=bwplaying_{{0}},scores={{{{start_bedwars=1..}}}}] run scoreboard players add {{0}} bwRdyPlyrs 1
+                        execute as @a[tag=playing_{{0}},scores={{{{start_bedwars=1}}}}] run tellraw @a[tag=playing_{{0}}] [{{{{"selector":"@s","color":"dark_purple"}}}},{{{{"text":" is ready to start!","color":"aqua"}}}}]
+                        scoreboard players set @a[tag=playing_{{0}},scores={{{{start_bedwars=1}}}}] start_bedwars 2
+                        execute as @a[tag=playing_{{0}},scores={{{{start_bedwars=1..}}}}] run scoreboard players add {{0}} bwRdyPlyrs 1
                         execute if score {{0}} bwPlyrCnt matches 2.. if score {{0}} bwRdyPlyrs = {{0}} bwPlyrCnt run function bedwars:{{0}}/initiate_countdown"""),
-                    *[f"execute as @a[tag=bwplaying_{{0}},team=bw{t.color}] run teleport @s {t.bed_pos}" for t in self.teams]
+                    *[f"execute as @a[tag=playing_{{0}},team=bw{t.color}] run teleport @s {t.bed_pos}" for t in self.teams]
                 ]
             }
         }

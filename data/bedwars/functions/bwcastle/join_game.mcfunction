@@ -1,4 +1,4 @@
-tag @s add bwplaying_bwcastle
+tag @s add playing_bwcastle
 effect clear @s
 effect give @s instant_health 1 9 
 effect give @s saturation 1 9
