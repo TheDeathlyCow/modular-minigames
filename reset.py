@@ -1,6 +1,7 @@
 from function_writer import *
 import os
 import re
+import textwrap
 
 ##* Datapack Functions *##
 
@@ -34,6 +35,7 @@ class Arena:
                     'scoreboard objectives add ld.{0} dummy',
                     'scoreboard objectives add sv.{0} dummy',
                     'scoreboard objectives add sv.{0} dummy',
+                    'scoreboard objectives add {0}.dy dummy',
                     'scoreboard players add saveNum sv.{0} 0',
                     'scoreboard players add loadNum ld.{0} 0'
                 ]
@@ -67,7 +69,9 @@ class Arena:
                     """scoreboard players add @s sv.{0} 0""",
                     """scoreboard players add @s ld.{0} 0""",
                     """execute unless score @s sv.{0} = saveNum sv.{0} run function reset:{0}/save_stand""",
-                    """execute unless score @s ld.{0} = loadNum ld.{0} run function reset:{0}/load_stand""",
+                    """execute if score @s {0}.dy matches 0.. run scoreboard players remove @s {0}.dy 1""",
+                    """execute if score @s {0}.dy matches ..0 run function reset:{0}/load_stand""",
+                    """execute unless score @s ld.{0} = loadNum ld.{0} run function reset:{0}/prepare_stand_for_load""",
                 ]
             },
             'save_stand': {
@@ -78,6 +82,15 @@ class Arena:
                     """scoreboard players operation @s sv.{0} = saveNum sv.{0}"""
                 ]
             },
+            'prepare_stand_for_load': {
+                COMMANDS: [
+                    textwrap.dedent("""\
+                    function reset:next_rand
+                    scoreboard players operation @s {0}.dy = current rstrandom
+                    scoreboard players operation @s {0}.dy %= max_delay rstrandom
+                    scoreboard players operation @s ld.{0} = loadNum ld.{0}""")
+                ]
+            },
             'load_stand': {
                 COMMANDS: [
                     """setblock ~ ~ ~ structure_block[mode=load]{{name:"temp",posX:0,posY:0,posZ:0,sizeX:48,sizeY:48,sizeZ:48,rotation:"NONE",mirror:"NONE",mode:"LOAD",ignoreEntities:0b}} replace""",
@@ -85,7 +98,8 @@ class Arena:
                     "teleport @e[type=!player,type=!marker,dx=48,dy=48,dz=48] ~ -100 ~",
                     "setblock ~ ~1 ~ redstone_block",
                     "teleport @e[type=item,dx=48,dy=48,dz=48] ~ -100 ~",
-                    "scoreboard players operation @s ld.{0} = loadNum ld.{0}"
+                    "scoreboard players operation @s ld.{0} = loadNum ld.{0}",
+                    "scoreboard players reset @s {0}.dy"
                 ]
             },
             '_join_player': {
@@ -98,7 +112,7 @@ class Arena:
             },
             '_leave_player': {
                 COMMANDS: [
-                    'tellraw @s [{{"text":"The arena you are currently in has reset! Removing you from the arena now...","color":"gold"}},{{"text":"\\nThis may occur if you disconnected in the middle of a game and not coming back)","color":"red","italic":true}}]',
+                    'tellraw @s [{{"text":"The arena you are currently in has reset! Removing you from the arena now...","color":"gold"}},{{"text":"\\nThis may occur if you disconnected in the middle of a game and did not come back)","color":"red","italic":true}}]',
                     'playsound minecraft:block.note_block.didgeridoo master @s ~ ~ ~ 1 0.8',
                     'tag @s add leave_{0}'
                 ],

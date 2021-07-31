@@ -4,3 +4,4 @@ teleport @e[type=!player,type=!marker,dx=48,dy=48,dz=48] ~ -100 ~
 setblock ~ ~1 ~ redstone_block
 teleport @e[type=item,dx=48,dy=48,dz=48] ~ -100 ~
 scoreboard players operation @s ld.bwcastle = loadNum ld.bwcastle
+scoreboard players reset @s bwcastle.dy

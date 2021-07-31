@@ -1,5 +1,6 @@
 scoreboard players set bwcastle bwNumTeams 4
 scoreboard objectives add bwcastle.tq dummy
+scoreboard objectives add ds.bwcastle dummy
 scoreboard players add bwcastle bwState 0
 
 scoreboard players add red bwcastle.tq 0

@@ -48,6 +48,12 @@ class Spleef:
         self._spleef = {
             "_join": {
                 COMMANDS: [
+                    "clear @s",
+                    "experience set @s 0 levels",
+                    "experience set @s 0 points",
+                    "effect clear @s",
+                    "effect give @s instant_health 1 10",
+                    "effect give @s saturation 1 10",
                     "gamemode adventure @s",
                     "scoreboard players operation {0} isSplfRunning -= binary modulus",
                     "execute if score {0} isSplfRunning matches -2 run function spleef:{0}/join_game",
@@ -60,20 +66,21 @@ class Spleef:
             },
             "_leave_game": {
                 COMMANDS: [
+                    "tellraw @a[tag=playing_{0}] [{{{{\"selector\":\"@s\"}}}},{{{{\"text\":\" has left {1}!\",\"color\":\"aqua\"}}}}]".format(
+                        self.name, self.proper_name),
+                    "tellraw @a[tag=spectating_{0}] [{{{{\"selector\":\"@s\"}}}},{{{{\"text\":\" has left {1}!\",\"color\":\"aqua\"}}}}]".format(
+                        self.name, self.proper_name),
                     "team leave @s",
                     "teleport @s {}".format(HUB_COORDINATES),
                     "spawnpoint @s {}".format(HUB_COORDINATES),
                     "tag @s remove spectating_{}",
                     "tag @s remove playing_{}",
                     "tag @s remove leave_{}",
-                    "tellraw @a[tag=playing_{0}] [{{{{\"selector\":\"@s\"}}}},{{{{\"text\":\" has left {0}!\",\"color\":\"aqua\"}}}}]".format(
-                        self.name),
-                    "tellraw @a[tag=spectating_{0}] [{{{{\"selector\":\"@s\"}}}},{{{{\"text\":\" has left {0}!\",\"color\":\"aqua\"}}}}]".format(
-                        self.name),
                     "scoreboard players reset @s start_spleef",
                     "scoreboard players reset @s leave_spleef",
                     "scoreboard players reset @s splfOver",
-                    "clear @s"
+                    "clear @s",
+                    "function modular_minigames:_arrive"
                 ],
                 COMMENTS: [
                     "executes as a player wanting to leave, at their position"

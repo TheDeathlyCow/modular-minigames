@@ -2,6 +2,7 @@
     "values": [
         "reset:load",
         "spleef:load",
-        "bedwars:load"
+        "bedwars:load",
+        "modular_minigames:load"
     ]
 }

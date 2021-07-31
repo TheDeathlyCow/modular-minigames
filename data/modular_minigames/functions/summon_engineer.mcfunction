@@ -1,0 +1,1 @@
+summon villager ~ ~ ~ {Invulnerable:1b,Tags:["train_engineer"],CustomName:'{"text":"Engineer","color":"gold"}',Attributes:[{Name:generic.movement_speed,Base:0}],VillagerData:{level:99,profession:"minecraft:armorer",type:"minecraft:plains"},Offers:{}}

@@ -1,7 +1,7 @@
 function reset:bwcastle/_join_spectator
 team join bwSpec @s
 tag @s remove playing_bwcastle
-tag @s add bwspectating_bwcastle
+tag @s add spectating_bwcastle
 effect clear @s
 effect give @s invisibility 99999 0 true
 gamemode adventure @s

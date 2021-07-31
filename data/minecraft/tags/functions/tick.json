@@ -2,6 +2,7 @@
     "values": [
         "reset:tick",
         "spleef:tick",
-        "bedwars:tick"
+        "bedwars:tick",
+        "modular_minigames:tick"
     ]
 }

@@ -1,0 +1,273 @@
+{
+    "type": "minecraft:generic",
+    "pools": [
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:yellow_banner",
+                    "functions": [
+                        {
+                            "function": "minecraft:set_banner_pattern",
+                            "patterns": [
+                                {
+                                    "pattern": "flower",
+                                    "color": "purple"
+                                },
+                                {
+                                    "pattern": "circle",
+                                    "color": "yellow"
+                                }
+                            ],
+                            "append": false
+                        },
+                        {
+                            "function": "minecraft:set_name",
+                            "name": "Intersex Pride Flag"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:white_banner",
+                    "functions": [
+                        {
+                            "function": "minecraft:set_banner_pattern",
+                            "patterns": [
+                                {
+                                    "pattern": "half_vertical_right",
+                                    "color": "gray"
+                                },
+                                {
+                                    "pattern": "stripe_right",
+                                    "color": "black"
+                                },
+                                {
+                                    "pattern": "stripe_left",
+                                    "color": "purple"
+                                }
+                            ],
+                            "append": false
+                        },
+                        {
+                            "function": "minecraft:set_name",
+                            "name": "Asexual Pride Flag"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:white_banner",
+                    "functions": [
+                        {
+                            "function": "minecraft:set_banner_pattern",
+                            "patterns": [
+                                {
+                                    "pattern": "half_vertical",
+                                    "color": "purple"
+                                },
+                                {
+                                    "pattern": "stripe_left",
+                                    "color": "black"
+                                },
+                                {
+                                    "pattern": "half_vertical_right",
+                                    "color": "white"
+                                },
+                                {
+                                    "pattern": "stripe_right",
+                                    "color": "yellow"
+                                }
+                            ],
+                            "append": false
+                        },
+                        {
+                            "function": "minecraft:set_name",
+                            "name": "Non-Binary Pride Flag"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:yellow_banner",
+                    "functions": [
+                        {
+                            "function": "minecraft:set_banner_pattern",
+                            "patterns": [
+                                {
+                                    "pattern": "stripe_right",
+                                    "color": "pink"
+                                },
+                                {
+                                    "pattern": "stripe_left",
+                                    "color": "light_blue"
+                                }
+                            ],
+                            "append": false
+                        },
+                        {
+                            "function": "minecraft:set_name",
+                            "name": "Pansexual Pride Flag"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:purple_banner",
+                    "functions": [
+                        {
+                            "function": "minecraft:set_banner_pattern",
+                            "patterns": [
+                                {
+                                    "pattern": "stripe_left",
+                                    "color": "blue"
+                                },
+                                {
+                                    "pattern": "stripe_right",
+                                    "color": "pink"
+                                }
+                            ],
+                            "append": false
+                        },
+                        {
+                            "function": "minecraft:set_name",
+                            "name": "Bisexual Pride Flag"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:white_banner",
+                    "functions": [
+                        {
+                            "function": "minecraft:set_banner_pattern",
+                            "patterns": [
+                                {
+                                    "pattern": "half_vertical",
+                                    "color": "pink"
+                                },
+                                {
+                                    "pattern": "stripe_left",
+                                    "color": "magenta"
+                                },
+                                {
+                                    "pattern": "stripe_right",
+                                    "color": "orange"
+                                },
+                                {
+                                    "pattern": "border",
+                                    "color": "red"
+                                }
+                            ],
+                            "append": false
+                        },
+                        {
+                            "function": "minecraft:set_name",
+                            "name": "Lesbian Pride Flag"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:white_banner",
+                    "functions": [
+                        {
+                            "function": "minecraft:set_name",
+                            "name": "Trans Pride Flag"
+                        },
+                        {
+                            "function": "minecraft:set_banner_pattern",
+                            "patterns": [
+                                {
+                                    "pattern": "stripe_right",
+                                    "color": "pink"
+                                },
+                                {
+                                    "pattern": "stripe_left",
+                                    "color": "pink"
+                                },
+                                {
+                                    "pattern": "border",
+                                    "color": "light_blue"
+                                }
+                            ],
+                            "append": false
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "rolls": 1,
+            "entries": [
+                {
+                    "type": "minecraft:item",
+                    "name": "minecraft:lime_banner",
+                    "functions": [
+                        {
+                            "function": "minecraft:set_name",
+                            "name": "Pride Flag"
+                        },
+                        {
+                            "function": "minecraft:set_banner_pattern",
+                            "patterns": [
+                                {
+                                    "pattern": "half_horizontal",
+                                    "color": "yellow"
+                                },
+                                {
+                                    "pattern": "stripe_top",
+                                    "color": "orange"
+                                },
+                                {
+                                    "pattern": "stripe_bottom",
+                                    "color": "blue"
+                                },
+                                {
+                                    "pattern": "triangles_top",
+                                    "color": "red"
+                                },
+                                {
+                                    "pattern": "triangles_bottom",
+                                    "color": "purple"
+                                }
+                            ],
+                            "append": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

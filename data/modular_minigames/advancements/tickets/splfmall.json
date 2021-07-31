@@ -1,0 +1,16 @@
+{
+    "parent": "modular_minigames:tickets/root",
+    "criteria": {
+        "requirement": {
+            "trigger": "minecraft:villager_trade",
+            "conditions": {
+                "item": {
+                    "nbt": "{Ticket:1}"
+                }
+            }
+        }
+    },
+    "rewards": {
+        "function": "modular_minigames:purchase/splfmall"
+    }
+}

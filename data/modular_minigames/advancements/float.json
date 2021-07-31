@@ -1,0 +1,19 @@
+{
+    "display": {
+        "icon": {
+            "item": "minecraft:feather"
+        },
+        "title": "Australian Gravity",
+        "description": "Something is not right...",
+        "frame": "challenge",
+        "show_toast": true,
+        "hidden": true,
+        "announce_to_chat": true
+    },
+    "parent": "modular_minigames:root",
+    "criteria": {
+        "requirement": {
+            "trigger": "minecraft:impossible"
+        }
+    }
+}
