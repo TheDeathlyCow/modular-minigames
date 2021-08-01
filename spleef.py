@@ -119,7 +119,7 @@ class Spleef:
             },
             "summon_knockback_mobs": {
                 COMMANDS: [
-                    "summon vindicator ~ ~ ~ {{Invulnerable:1b,HandItems:[{{id:\"minecraft:stick\",Count:1b,tag:{{Enchantments:[{{id:\"minecraft:knockback\",lvl:5s}}]}}}},{{}}],HandDropChances:[-327.670F,0.085F]}}",
+                    """summon zombie ~ ~ ~ {{CanPickUpLoot:0b,HandItems:[{{id:"minecraft:stick",Count:1b,tag:{{Enchantments:[{{id:"minecraft:knockback",lvl:5s}}]}}}},{{}}],HandDropChances:[-327.670F,0.085F],ArmorItems:[{{}},{{}},{{}},{{id:"minecraft:golden_helmet",Count:1b}}],ArmorDropChances:[0.085F,0.085F,0.085F,-327.670F],Attributes:[{{Name:zombie.spawn_reinforcements,Base:0}}]}}""",
                     """tellraw @s [{{"text":"This is taking too long! Die!","color":"aqua"}}]""",
                     "playsound minecraft:entity.dragon_fireball.explode master @s ~ ~ ~"
                 ]
@@ -182,6 +182,7 @@ class Spleef:
                     "effect clear @a[tag=playing_{0}]",
                     "effect give @a[tag=playing_{0}] instant_health 1 10",
                     "effect give @a[tag=playing_{0}] saturation 1 10",
+                    "effect give @a[tag=playing_{0}] resistance 99999 10",
                     "scoreboard players set {0} splfTimer 0"
                 ],
                 COMMENTS: [
@@ -230,7 +231,7 @@ class Spleef:
     def _get_spleef_item_commands(self):
         give_commands = []
         for item in self.spleef_items:
-            give_commands.append(f"give @a[tag=playing_{self.name}] {item} 1")
+            give_commands.append(f"give @a[tag=playing_{self.name}] {item}")
 
         return give_commands
 
@@ -251,11 +252,12 @@ def get_countdown_commands(name: str, seconds: list) -> list:
 
 def generate_hockey():
     spleef_items = [
-        "diamond_pickaxe{{CanDestroy:[\"minecraft:packed_ice\"],Unbreakable:1b,Enchantments:[{{id:\"minecraft:efficiency\",lvl:3s}}]}}",
-        "shears{{CanDestroy:[\"minecraft:red_wool\",\"minecraft:white_wool\",\"minecraft:blue_wool\",\"minecraft:light_blue_wool\"],Unbreakable:1b,Enchantments:[{{id:\"minecraft:efficiency\",lvl:5s}}]}}",
-        "lingering_potion{{Potion:\"minecraft:slowness\"}}",
-        "lingering_potion{{Potion:\"minecraft:slowness\"}}",
-        "lingering_potion{{Potion:\"minecraft:slowness\"}}"
+        "diamond_pickaxe{{CanDestroy:[\"minecraft:packed_ice\"],Unbreakable:1b,Enchantments:[{{id:\"minecraft:efficiency\",lvl:3s}}]}} 1",
+        "shears{{CanDestroy:[\"minecraft:red_wool\",\"minecraft:white_wool\",\"minecraft:blue_wool\",\"minecraft:light_blue_wool\"],Unbreakable:1b,Enchantments:[{{id:\"minecraft:efficiency\",lvl:5s}}]}} 1",
+        "lingering_potion{{Potion:\"minecraft:slowness\"}} 1",
+        "lingering_potion{{Potion:\"minecraft:slowness\"}} 1",
+        "lingering_potion{{Potion:\"minecraft:slowness\"}} 1",
+        "golden_carrot 64"
     ]
 
     arena_name = "splfhockey"
@@ -273,8 +275,9 @@ def generate_hockey():
 
 def generate_herb():
     spleef_items = [
-        """bow{{Unbreakable:1b,Enchantments:[{{id:"minecraft:flame",lvl:1s}},{{id:"minecraft:infinity",lvl:1s}}]}}""",
-        """arrow"""
+        """bow{{Unbreakable:1b,Enchantments:[{{id:"minecraft:flame",lvl:1s}},{{id:"minecraft:infinity",lvl:1s}}]}} 1""",
+        """arrow 1""",
+        "golden_carrot 64"
     ]
 
     arena_name = "splfmall"
@@ -292,7 +295,8 @@ def generate_herb():
 
 def generate_cloud():
     spleef_items = [
-        """netherite_shovel{{Unbreakable:1b,CanDestroy:[\"minecraft:snow_block\",\"minecraft:powder_snow\"]}}"""
+        """netherite_shovel{{Unbreakable:1b,CanDestroy:[\"minecraft:snow_block\",\"minecraft:powder_snow\"]}} 1""",
+        "golden_carrot 64"
     ]
 
     arena_name = "splftower"

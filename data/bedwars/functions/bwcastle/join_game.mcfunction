@@ -2,6 +2,7 @@ tag @s add playing_bwcastle
 effect clear @s
 effect give @s instant_health 1 9 
 effect give @s saturation 1 9
+#effect give @s slowness 999999 9
 gamemode adventure @s
 clear @s
 scoreboard players enable @s start_bedwars

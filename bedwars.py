@@ -141,7 +141,7 @@ class BedWars:
                     f"""tellraw @s {{{{"text":"Welcome to {self.proper_name}!","color":"dark_aqua","bold":true}}}}""",
                     """execute if score {0} bwPlyrCnt < {0}.mx bwPlyrCnt if score {0} bwState matches 0 run function bedwars:{0}/join_game""", # only join game if it is not full and in WAIT state
                     """execute if score {0} bwPlyrCnt >= {0}.mx bwPlyrCnt if score {0} bwState matches 0 run function bedwars:{0}/join_spectators""", # join spectators if game is full while in WAIT state
-                    """execute unless score {0} bwStates matches 0 run function bedwars:{0}/join_spectators""" # join spectators if game is *not* in WAIT state
+                    """execute unless score {0} bwState matches 0 run function bedwars:{0}/join_spectators""" # join spectators if game is *not* in WAIT state
                 ]
             },
             "_leave": {
@@ -254,6 +254,7 @@ class BedWars:
                         effect clear @s
                         effect give @s instant_health 1 9 
                         effect give @s saturation 1 9
+                        #effect give @s slowness 999999 9
                         gamemode adventure @s
                         clear @s
                         scoreboard players enable @s start_bedwars
@@ -343,8 +344,8 @@ class BedWars:
                         execute as @a[tag=playing_{{0}},scores={{{{start_bedwars=1}}}}] run tellraw @a[tag=playing_{{0}}] [{{{{"selector":"@s","color":"dark_purple"}}}},{{{{"text":" is ready to start!","color":"aqua"}}}}]
                         scoreboard players set @a[tag=playing_{{0}},scores={{{{start_bedwars=1}}}}] start_bedwars 2
                         execute as @a[tag=playing_{{0}},scores={{{{start_bedwars=1..}}}}] run scoreboard players add {{0}} bwRdyPlyrs 1
-                        execute if score {{0}} bwPlyrCnt matches 2.. if score {{0}} bwRdyPlyrs = {{0}} bwPlyrCnt run function bedwars:{{0}}/initiate_countdown"""),
-                    *[f"execute as @a[tag=playing_{{0}},team=bw{t.color}] run teleport @s {t.bed_pos}" for t in self.teams]
+                        execute if score {{0}} bwPlyrCnt matches 2.. if score {{0}} bwRdyPlyrs = {{0}} bwPlyrCnt run function bedwars:{{0}}/initiate_countdown""")
+                    # *[f"execute as @a[tag=playing_{{0}},team=bw{t.color}] run teleport @s {t.bed_pos}" for t in self.teams]
                 ]
             }
         }

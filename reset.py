@@ -36,6 +36,7 @@ class Arena:
                     'scoreboard objectives add sv.{0} dummy',
                     'scoreboard objectives add sv.{0} dummy',
                     'scoreboard objectives add {0}.dy dummy',
+                    'scoreboard objectives add {0}.it dummy',
                     'scoreboard players add saveNum sv.{0} 0',
                     'scoreboard players add loadNum ld.{0} 0'
                 ]
@@ -71,7 +72,15 @@ class Arena:
                     """execute unless score @s sv.{0} = saveNum sv.{0} run function reset:{0}/save_stand""",
                     """execute if score @s {0}.dy matches 0.. run scoreboard players remove @s {0}.dy 1""",
                     """execute if score @s {0}.dy matches ..0 run function reset:{0}/load_stand""",
+                    """scoreboard players remove @s[scores={{{0}.it=1..}}] {0}.it 1""",
+                    """execute if score @s {0}.it matches ..0 run function reset:{0}/clear_items""",
                     """execute unless score @s ld.{0} = loadNum ld.{0} run function reset:{0}/prepare_stand_for_load""",
+                ]
+            },
+            'clear_items': {
+                COMMANDS: [
+                    """teleport @e[type=item,dx=48,dy=48,dz=48] ~ -100 ~""",
+                    """forceload remove ~ ~"""
                 ]
             },
             'save_stand': {
@@ -86,6 +95,7 @@ class Arena:
                 COMMANDS: [
                     textwrap.dedent("""\
                     function reset:next_rand
+                    forceload add ~ ~ 
                     scoreboard players operation @s {0}.dy = current rstrandom
                     scoreboard players operation @s {0}.dy %= max_delay rstrandom
                     scoreboard players operation @s ld.{0} = loadNum ld.{0}""")
@@ -96,10 +106,14 @@ class Arena:
                     """setblock ~ ~ ~ structure_block[mode=load]{{name:"temp",posX:0,posY:0,posZ:0,sizeX:48,sizeY:48,sizeZ:48,rotation:"NONE",mirror:"NONE",mode:"LOAD",ignoreEntities:0b}} replace""",
                     """data modify block ~ ~ ~ name set from entity @s data.structure""",
                     "teleport @e[type=!player,type=!marker,dx=48,dy=48,dz=48] ~ -100 ~",
-                    "setblock ~ ~1 ~ redstone_block",
                     "teleport @e[type=item,dx=48,dy=48,dz=48] ~ -100 ~",
                     "scoreboard players operation @s ld.{0} = loadNum ld.{0}",
-                    "scoreboard players reset @s {0}.dy"
+                    "scoreboard players reset @s {0}.dy",
+                    textwrap.dedent("""\
+                        fill ~ ~1 ~ ~ ~4 ~ air
+                        setblock ~ ~1 ~ observer[facing=up]
+                        setblock ~ ~4 ~ sand 
+                        scoreboard players set @s {0}.it 5""")
                 ]
             },
             '_join_player': {

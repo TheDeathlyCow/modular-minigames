@@ -6,6 +6,7 @@ give @a[tag=playing_splfhockey] shears{CanDestroy:["minecraft:red_wool","minecra
 give @a[tag=playing_splfhockey] lingering_potion{Potion:"minecraft:slowness"} 1
 give @a[tag=playing_splfhockey] lingering_potion{Potion:"minecraft:slowness"} 1
 give @a[tag=playing_splfhockey] lingering_potion{Potion:"minecraft:slowness"} 1
+give @a[tag=playing_splfhockey] golden_carrot 64
 scoreboard players set splfhockey isSplfRunning 1
 tellraw @a[tag=playing_splfhockey] [{"text":"The game has begun!","color":"dark_purple"}]
 title @a[tag=playing_splfhockey] title [{"text":"GO!","color":"dark_purple","bold":true}]
@@ -16,4 +17,5 @@ scoreboard players reset @a[tag=playing_splfhockey] splfOver
 effect clear @a[tag=playing_splfhockey]
 effect give @a[tag=playing_splfhockey] instant_health 1 10
 effect give @a[tag=playing_splfhockey] saturation 1 10
+effect give @a[tag=playing_splfhockey] resistance 99999 10
 scoreboard players set splfhockey splfTimer 0

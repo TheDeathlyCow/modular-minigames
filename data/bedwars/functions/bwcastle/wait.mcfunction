@@ -4,7 +4,3 @@ execute as @a[tag=playing_bwcastle,scores={start_bedwars=1}] run tellraw @a[tag=
 scoreboard players set @a[tag=playing_bwcastle,scores={start_bedwars=1}] start_bedwars 2
 execute as @a[tag=playing_bwcastle,scores={start_bedwars=1..}] run scoreboard players add bwcastle bwRdyPlyrs 1
 execute if score bwcastle bwPlyrCnt matches 2.. if score bwcastle bwRdyPlyrs = bwcastle bwPlyrCnt run function bedwars:bwcastle/initiate_countdown
-execute as @a[tag=playing_bwcastle,team=bwred] run teleport @s 1080 96 1003
-execute as @a[tag=playing_bwcastle,team=bwyellow] run teleport @s 1156 96 1079
-execute as @a[tag=playing_bwcastle,team=bwgreen] run teleport @s 1004 96 1079
-execute as @a[tag=playing_bwcastle,team=bwblue] run teleport @s 1080 96 1155
