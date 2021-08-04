@@ -17,5 +17,5 @@ scoreboard players reset @a[tag=playing_splfhockey] splfOver
 effect clear @a[tag=playing_splfhockey]
 effect give @a[tag=playing_splfhockey] instant_health 1 10
 effect give @a[tag=playing_splfhockey] saturation 1 10
-effect give @a[tag=playing_splfhockey] resistance 99999 10
+#effect give @a[tag=playing_splfhockey] resistance 99999 10
 scoreboard players set splfhockey splfTimer 0

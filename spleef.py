@@ -182,7 +182,7 @@ class Spleef:
                     "effect clear @a[tag=playing_{0}]",
                     "effect give @a[tag=playing_{0}] instant_health 1 10",
                     "effect give @a[tag=playing_{0}] saturation 1 10",
-                    "effect give @a[tag=playing_{0}] resistance 99999 10",
+                    "#effect give @a[tag=playing_{0}] resistance 99999 10",
                     "scoreboard players set {0} splfTimer 0"
                 ],
                 COMMENTS: [

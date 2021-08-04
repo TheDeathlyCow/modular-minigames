@@ -14,5 +14,5 @@ scoreboard players reset @a[tag=playing_splfmall] splfOver
 effect clear @a[tag=playing_splfmall]
 effect give @a[tag=playing_splfmall] instant_health 1 10
 effect give @a[tag=playing_splfmall] saturation 1 10
-effect give @a[tag=playing_splfmall] resistance 99999 10
+#effect give @a[tag=playing_splfmall] resistance 99999 10
 scoreboard players set splfmall splfTimer 0

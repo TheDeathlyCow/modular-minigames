@@ -91,10 +91,6 @@
                 },
                 {
                     "type": "minecraft:item",
-                    "name": "minecraft:enchanted_golden_apple"
-                },
-                {
-                    "type": "minecraft:item",
                     "name": "minecraft:spectral_arrow",
                     "functions": [
                         {

@@ -85,8 +85,7 @@ class BedWars:
                         effect give @a[tag=playing_{0}] saturation 1 10 true 
                         effect give @a[tag=playing_{0}] instant_health 1 10 true 
                         advancement grant @a[tag=playing_{0}] only modular_minigames:win_bedwars
-                        execute as @a[tag=playing_{0}] run function bedwars:{0}/_leave
-                        execute as @a[tag=spectating_{0}] run function bedwars:{0}/_leave"""),
+                        execute as @a[tag=playing_{0}] run function bedwars:{0}/join_spectators"""),
                     "function " + LOAD_FUNC 
                 ]
             }
@@ -120,7 +119,7 @@ class BedWars:
                     textwrap.dedent(f"""\
                         item replace entity @s armor.head with leather_helmet{{{{display:{{{{color:{COLOR_MAP[team.color]}}}}}}}}} 1
                         item replace entity @s armor.chest with leather_chestplate{{{{display:{{{{color:{COLOR_MAP[team.color]}}}}}}}}} 1"""),
-                    f"spreadplayers ~ ~ 0 10 under {team.bed_pos.y + 1} true @s"
+                    f"spreadplayers ~ ~ 0 3 under {team.bed_pos.y + 1} true @s"
                 ]
             }
 
