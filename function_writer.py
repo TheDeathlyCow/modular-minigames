@@ -12,6 +12,7 @@ class BlockPos:
     __repr__ = __str__
 
 HUB_COORDINATES = BlockPos(-34, 8, -203)
+SPAWN_COORDINATES = BlockPos(-3, 4, -42)
 COMMANDS = 'commands'
 COMMENTS = 'comments'
 
@@ -21,7 +22,7 @@ class FuncWriter:
         self.base_directory = base_directory
         self.arena_name = arena_name
         try:
-            os.mkdir(self.base_directory)
+            os.makedirs(self.base_directory)
         except FileExistsError:
             pass
 

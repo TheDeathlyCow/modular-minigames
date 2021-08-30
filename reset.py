@@ -15,6 +15,48 @@ func_root = "data/reset/functions/"
 
 ##* Generator Functions *##
 
+class SimpleArena:
+
+    def __init__(self, name: str, proper_name: str, bound1: BlockPos, bound2: BlockPos) -> None:
+        self.name = name
+        self.proper_name = proper_name
+        self.bound1 = bound1
+        self.bound2 = bound2
+
+        try:
+            os.mkdir(func_root + f'{self.name}/')
+        except FileExistsError:
+            pass
+        
+        self._arena = {
+            'reload': {
+                COMMANDS: [
+                    'scoreboard objectives add ld.{0} dummy',
+                    'scoreboard objectives add sv.{0} dummy',
+                    'scoreboard objectives add sv.{0} dummy',
+                    'scoreboard objectives add {0}.dy dummy',
+                    'scoreboard objectives add {0}.it dummy',
+                    'scoreboard players add saveNum sv.{0} 0',
+                    'scoreboard players add loadNum ld.{0} 0'
+                ]
+            },
+            '_save': {
+                COMMANDS: [
+                    f"""tellraw @a {{{{"text":"Commencing save of {proper_name}!","color":"green"}}}}""",
+                    "scoreboard players add saveNum sv.{0} 1"
+                ]
+            },
+            '_load': {
+                COMMANDS: [
+                    f"""tellraw @a {{{{"text":"Commencing reset of {proper_name}!","color":"red"}}}}""",
+                    "scoreboard players add loadNum ld.{0} 1"
+                ]
+            }
+        }
+
+    def generate(self):
+        writer = FuncWriter(func_root + self.name + '/', self.name)
+        writer.write_functions(self._arena)
 
 class Arena:
 
@@ -208,7 +250,7 @@ def get_pos(name):
     return tuple(pos_lst)
 
 
-def run():
+def main():
     input_data = get_command_input_data()
     structure_name = input_data[0]
     start_pos = input_data[1]
