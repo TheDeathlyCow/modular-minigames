@@ -3,6 +3,7 @@
 clear @a[tag=playing_splfmall]
 give @a[tag=playing_splfmall] bow{Unbreakable:1b,Enchantments:[{id:"minecraft:flame",lvl:1s},{id:"minecraft:infinity",lvl:1s}]} 1
 give @a[tag=playing_splfmall] arrow 1
+give @a[tag=playing_splfmall] fire_charge 10
 give @a[tag=playing_splfmall] golden_carrot 64
 scoreboard players set splfmall isSplfRunning 1
 tellraw @a[tag=playing_splfmall] [{"text":"The game has begun!","color":"dark_purple"}]

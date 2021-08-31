@@ -4,4 +4,8 @@ execute if score @s buy_ticket matches 2 run function modular_minigames:purchase
 execute if score @s buy_ticket matches 3 run function modular_minigames:purchase/splfhockey
 execute if score @s buy_ticket matches 4 run function modular_minigames:purchase/bwcastle
 execute if score @s buy_ticket matches 5 run function modular_minigames:purchase/sgmoku
+execute if score @s buy_ticket matches 6 run function modular_minigames:purchase/pkcaves
+execute if score @s buy_ticket matches 7 run function modular_minigames:purchase/pkaqua
+execute if score @s buy_ticket matches 8 run function modular_minigames:purchase/pkreflect
+
 scoreboard players reset @s buy_ticket

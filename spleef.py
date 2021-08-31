@@ -277,6 +277,7 @@ def generate_herb():
     spleef_items = [
         """bow{{Unbreakable:1b,Enchantments:[{{id:"minecraft:flame",lvl:1s}},{{id:"minecraft:infinity",lvl:1s}}]}} 1""",
         """arrow 1""",
+        """fire_charge 10""",
         "golden_carrot 64"
     ]
 
