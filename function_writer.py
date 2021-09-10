@@ -26,14 +26,14 @@ class FuncWriter:
         except FileExistsError:
             pass
 
-    def write_functions(self, functions : dict):
+    def write_functions(self, functions : dict, format=True):
         for function_name in functions.keys():
             func = functions[function_name]
             commands = func[COMMANDS]
             comments = func.get(COMMENTS, None)
-            self.write_function(function_name, commands, comments)
+            self.write_function(function_name, commands, comments=comments, format=format)
 
-    def write_function(self, name: str, commands: list, comments=None) -> None:
+    def write_function(self, name: str, commands: list, comments=None, format=True) -> None:
         """
         Writes a given list of commands to a .mcfunction file. Commands do not need endline characters.
         Do not include extension in filename.
@@ -47,6 +47,9 @@ class FuncWriter:
             func.write('\n')
 
         for command in commands:
-            func.write((command + '\n').format(self.arena_name))
+            to_write = command + '\n'
+            if format:
+                to_write = to_write.format(self.arena_name)
+            func.write(to_write)
 
         func.close()

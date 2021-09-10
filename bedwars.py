@@ -23,11 +23,26 @@ class BedWarsTeam:
     def get_formal_name(self) -> str:
         return self.color.capitalize()
 
-    def checkspawn(self) -> str:
+    def checkspawn(self, arena_name, arena_proper_name) -> str:
         return textwrap.dedent(f"""\
             execute if score {self.color} {{0}}.bd matches 0 positioned {self.bed_pos} unless block ~ ~ ~ #minecraft:beds run function bedwars:{{0}}/bed_destroyed/{self.color}
             execute if score {self.color} {{0}}.bd matches 0 positioned {self.bed_pos} as @a[tag=playing_{{0}},team=bw{self.color},scores={{{{bwDied=1..,bwHealth=1..}}}}] run function bedwars:{{0}}/respawn/{self.color}
-            execute if score {self.color} {{0}}.bd matches 1 as @a[tag=playing_{{0}},team=bw{self.color},scores={{{{bwDied=1..}}}}] at @s run function bedwars:{{0}}/eliminate""")
+            execute if score {self.color} {{0}}.bd matches 1 as @a[tag=playing_{{0}},team=bw{self.color},scores={{{{bwDied=1..}}}}] at @s run function bedwars:{{0}}/eliminate
+            
+            execute if score {self.color} {{0}}.bd matches 1 run bossbar set {arena_name}.{self.color} value 0
+            execute if score {self.color} {{0}}.bd matches 0 run bossbar set {arena_name}.{self.color} value 1
+            """)
+
+    def get_bossbar(self, arena_name, arena_proper_name) -> str:
+    
+        return textwrap.dedent(f"""\
+            bossbar add {arena_name}.{self.color} {{{{"text":"{self.color.capitalize()} Team Bed","color":"{self.color}"}}}}
+            bossbar set {arena_name}.{self.color} color {self.color}
+            bossbar set {arena_name}.{self.color} max 1
+            bossbar set {arena_name}.{self.color} value 1
+            bossbar set {arena_name}.{self.color} visible true
+            bossbar set {arena_name}.{self.color} players @a[tag=playing_{arena_name}]
+            """)
 
     def checkvictory(self) -> str:
         return textwrap.dedent(f"""\
@@ -78,6 +93,7 @@ class BedWars:
             "victory": {
                 COMMANDS: [
                     *[f"scoreboard players set {team.color} {{0}}.bd 0" for team in self.teams],
+                    *[f"""bossbar remove {self.name}.{team.color}""" for team in self.teams],
                     textwrap.dedent("""\
                         scoreboard players set {0} bwState 0
                         clear @a[tag=playing_{0}]
@@ -160,7 +176,7 @@ class BedWars:
             },
             "check_spawnpoints": {
                 COMMANDS: ["execute as @a[tag=playing_{0}] store result score @s bwHealth run data get entity @s Health"] + [
-                    t.checkspawn() for t in self.teams
+                    t.checkspawn(self.name, self.proper_name) for t in self.teams
                 ]
             },
             "check_victory": {
@@ -177,6 +193,8 @@ class BedWars:
             "countdown": {
                 COMMANDS: [
                     textwrap.dedent("""\
+                        effect give @a[tag=playing_{0},predicate=bedwars:in_void] levitation 6 20 
+                        effect give @a[tag=playing_{0}] resistance 2 255 true
                         scoreboard players remove {0} bwCntDwn 1
 
                         execute if score {0} bwCntDwn matches 300 run title @a[tag=playing_{0}] title {{"text":"15","color":"dark_purple","bold":true}}
@@ -209,7 +227,8 @@ class BedWars:
                         execute if score {0} bwCntDwn matches 20 as @a[tag=playing_{0}] at @s run playsound minecraft:block.note_block.hat master @s ~ ~ ~ 1
 
                         execute if score {0} bwCntDwn matches 0 run title @a[tag=playing_{0}] title {{"text":"GO!","color":"dark_purple","bold":true}}
-                        execute if score {0} bwCntDwn matches 0 run function bedwars:{0}/start""")
+                        execute if score {0} bwCntDwn matches 0 run function bedwars:{0}/start
+                        """)
                 ]
             },
             "eliminate": {
@@ -302,6 +321,7 @@ class BedWars:
             "start": {
                 COMMANDS: [
                     *[f"scoreboard players set {team.color} {{0}}.bd 0" for team in self.teams],
+                    *[team.get_bossbar(self.name, self.proper_name) for team in self.teams],
                     textwrap.dedent("""\
                         execute as @a[tag=playing_{0}] at @s run playsound minecraft:block.note_block.pling master @s ~ ~ ~ 1
                         tellraw @a[tag=playing_{0}] [{{"text":"The game has begun! Your gamemodes have been updated.","color":"aqua"}}]
@@ -343,7 +363,10 @@ class BedWars:
                         execute as @a[tag=playing_{{0}},scores={{{{start_bedwars=1}}}}] run tellraw @a[tag=playing_{{0}}] [{{{{"selector":"@s","color":"dark_purple"}}}},{{{{"text":" is ready to start!","color":"aqua"}}}}]
                         scoreboard players set @a[tag=playing_{{0}},scores={{{{start_bedwars=1}}}}] start_bedwars 2
                         execute as @a[tag=playing_{{0}},scores={{{{start_bedwars=1..}}}}] run scoreboard players add {{0}} bwRdyPlyrs 1
-                        execute if score {{0}} bwPlyrCnt matches 2.. if score {{0}} bwRdyPlyrs = {{0}} bwPlyrCnt run function bedwars:{{0}}/initiate_countdown""")
+                        execute if score {{0}} bwPlyrCnt matches 2.. if score {{0}} bwRdyPlyrs = {{0}} bwPlyrCnt run function bedwars:{{0}}/initiate_countdown
+                        effect give @a[tag=playing_{{0}},predicate=bedwars:in_void] levitation 6 20 
+                        effect give @a[tag=playing_{{0}}] resistance 2 255 true
+                        """)
                     # *[f"execute as @a[tag=playing_{{0}},team=bw{t.color}] run teleport @s {t.bed_pos}" for t in self.teams]
                 ]
             }

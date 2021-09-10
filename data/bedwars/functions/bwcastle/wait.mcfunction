@@ -4,3 +4,6 @@ execute as @a[tag=playing_bwcastle,scores={start_bedwars=1}] run tellraw @a[tag=
 scoreboard players set @a[tag=playing_bwcastle,scores={start_bedwars=1}] start_bedwars 2
 execute as @a[tag=playing_bwcastle,scores={start_bedwars=1..}] run scoreboard players add bwcastle bwRdyPlyrs 1
 execute if score bwcastle bwPlyrCnt matches 2.. if score bwcastle bwRdyPlyrs = bwcastle bwPlyrCnt run function bedwars:bwcastle/initiate_countdown
+effect give @a[tag=playing_bwcastle,predicate=bedwars:in_void] levitation 6 20 
+effect give @a[tag=playing_bwcastle] resistance 2 255 true
+

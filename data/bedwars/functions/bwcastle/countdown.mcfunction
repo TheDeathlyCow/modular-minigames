@@ -1,3 +1,5 @@
+effect give @a[tag=playing_bwcastle,predicate=bedwars:in_void] levitation 6 20 
+effect give @a[tag=playing_bwcastle] resistance 2 255 true
 scoreboard players remove bwcastle bwCntDwn 1
 
 execute if score bwcastle bwCntDwn matches 300 run title @a[tag=playing_bwcastle] title {"text":"15","color":"dark_purple","bold":true}
@@ -31,3 +33,4 @@ execute if score bwcastle bwCntDwn matches 20 as @a[tag=playing_bwcastle] at @s 
 
 execute if score bwcastle bwCntDwn matches 0 run title @a[tag=playing_bwcastle] title {"text":"GO!","color":"dark_purple","bold":true}
 execute if score bwcastle bwCntDwn matches 0 run function bedwars:bwcastle/start
+

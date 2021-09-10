@@ -1,14 +1,5 @@
 from function_writer import *
 from reset import Arena
-"""
-things i'll need to prompt user for:
-    - arena name
-    - arena start position
-    - arena death position
-    - item(s) for breaking
-        -> possibly the item of the give command itself? 
-    - possibly: arena bounds for reset? 
-"""
 
 SPLEEF_FUNC_FOLDER = "data/spleef/functions/"
 LOAD_FUNC = "reset:{0}/_load"
@@ -235,10 +226,10 @@ class Spleef:
 
         return give_commands
 
-    def gen_spleef(self):
-        writer = FuncWriter(SPLEEF_FUNC_FOLDER + f"{self.name}/", self.name)
+    def gen_spleef(self, func_folder: str=SPLEEF_FUNC_FOLDER):
+        writer = FuncWriter(func_folder + f"{self.name}/", self.name)
         writer.write_functions(self._spleef)
-        writer = FuncWriter(SPLEEF_FUNC_FOLDER +
+        writer = FuncWriter(func_folder +
                             f"{self.name}/countdown/", self.name)
         writer.write_functions(self._countdown)
 
