@@ -1,5 +1,6 @@
 from function_writer import *
 from reset import Arena
+from reset import SimpleArena
 import textwrap
 
 BEDWARS_FUNC_FOLDER = "data/bedwars/functions/"
@@ -131,10 +132,10 @@ class BedWars:
             self._respawn[team.color] = {
                 COMMANDS: [
                     "function bedwars:{0}/respawn/give_basic_kit",
-                    *[f"give @s {i} {c} " for i, c in team.respawn_items],
                     textwrap.dedent(f"""\
                         item replace entity @s armor.head with leather_helmet{{{{display:{{{{color:{COLOR_MAP[team.color]}}}}}}}}} 1
                         item replace entity @s armor.chest with leather_chestplate{{{{display:{{{{color:{COLOR_MAP[team.color]}}}}}}}}} 1"""),
+                    *[f"give @s {i} {c} " for i, c in team.respawn_items],
                     f"spreadplayers ~ ~ 0 3 under {team.bed_pos.y + 1} true @s"
                 ]
             }
@@ -420,4 +421,24 @@ def castleinthesky():
     arena.generate()
 
 
-castleinthesky()
+def bwpirates():
+    teams = [
+        BedWarsTeam("red", BlockPos(2944, 77, 1152), [("axolotl_bucket", 1)]),
+        BedWarsTeam("yellow", BlockPos(2816, 77, 1024), [("axolotl_bucket", 1)]),
+        BedWarsTeam("green", BlockPos(2944, 77, 896), [("axolotl_bucket", 1)]),
+        BedWarsTeam("blue", BlockPos(3072, 77, 1024), [("axolotl_bucket", 1)])
+    ]
+
+    arena_name = "bwpirates"
+    proper_name = "Pirates!"
+    bwarena = BedWars(arena_name, proper_name, 5,
+                    teams, BlockPos(2944, 123, 1024))
+
+    bwarena.generate()
+    arena = SimpleArena(arena_name, proper_name, BlockPos(
+        0, 0, 0), BlockPos(0, 0, 0))
+    arena.generate()
+
+if __name__ == '__main__':
+    # bwpirates()
+    pass

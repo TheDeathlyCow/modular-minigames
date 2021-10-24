@@ -29,27 +29,16 @@ class SimpleArena:
             pass
         
         self._arena = {
-            'reload': {
-                COMMANDS: [
-                    'scoreboard objectives add ld.{0} dummy',
-                    'scoreboard objectives add sv.{0} dummy',
-                    'scoreboard objectives add sv.{0} dummy',
-                    'scoreboard objectives add {0}.dy dummy',
-                    'scoreboard objectives add {0}.it dummy',
-                    'scoreboard players add saveNum sv.{0} 0',
-                    'scoreboard players add loadNum ld.{0} 0'
-                ]
-            },
             '_save': {
                 COMMANDS: [
                     f"""tellraw @a {{{{"text":"Commencing save of {proper_name}!","color":"green"}}}}""",
-                    "scoreboard players add saveNum sv.{0} 1"
+                    "scoreboard players add $saveNum sv.{0} 1"
                 ]
             },
             '_load': {
                 COMMANDS: [
                     f"""tellraw @a {{{{"text":"Commencing reset of {proper_name}!","color":"red"}}}}""",
-                    "scoreboard players add loadNum ld.{0} 1"
+                    "scoreboard players add $loadNum ld.{0} 1"
                 ]
             }
         }
