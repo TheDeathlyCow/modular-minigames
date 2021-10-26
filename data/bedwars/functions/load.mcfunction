@@ -21,5 +21,6 @@ team modify bwSpec color white
 team modify bwSpec seeFriendlyInvisibles false
 
 function bedwars:load_teams
-function bedwars:template/load
+#function bedwars:template/load
 function bedwars:bwcastle/load
+function bedwars:bwpirates/load
