@@ -11,4 +11,4 @@ execute as @a[scores={leave_bedwars=1..},tag=spectating_bwpirates] run function 
 execute unless score bwpirates bwState matches 0 run function bedwars:bwpirates/count_players
 execute unless score bwpirates bwState matches 0 if score bwpirates bwPlyrCnt matches 0 run function bedwars:bwpirates/victory/victory
 
-item replace entity @a[tag=spectating_bwpirates,nbt=!{Inventory:[{id:"shield"}]}] hotbar.8 with shield{display:{Name:'{"text":"Right Click to Leave","color":"red","italic":false}'},bwLeaveClick:1b,BlockEntityTag:{Base:14,Patterns:[{Color:0,Pattern:"mr"},{Color:14,Pattern:"vh"}]}} 1
+item replace entity @a[tag=spectating_bwpirates,nbt=!{Inventory:[{id:"minecraft:shield"}]}] hotbar.8 with shield{display:{Name:'{"text":"Right Click to Leave","color":"red","italic":false}'},bwLeaveClick:1b,BlockEntityTag:{Base:14,Patterns:[{Color:0,Pattern:"mr"},{Color:14,Pattern:"vh"}]}} 1

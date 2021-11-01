@@ -55,7 +55,7 @@ class BedWarsTeam:
 
 class BedWars:
 
-    def __init__(self, name: str, proper_name: str, players_per_game: int, teams: list, spectator_pos: BlockPos) -> None:
+    def __init__(self, name: str, proper_name: str, players_per_game: int, teams: list[BedWarsTeam], spectator_pos: BlockPos) -> None:
         self.name = name
         self.teams = teams
         self.spectator_pos = spectator_pos
@@ -365,10 +365,19 @@ class BedWars:
                         scoreboard players set @a[tag=playing_{{0}},scores={{{{start_bedwars=1}}}}] start_bedwars 2
                         execute as @a[tag=playing_{{0}},scores={{{{start_bedwars=1..}}}}] run scoreboard players add {{0}} bwRdyPlyrs 1
                         execute if score {{0}} bwPlyrCnt matches 2.. if score {{0}} bwRdyPlyrs = {{0}} bwPlyrCnt run function bedwars:{{0}}/initiate_countdown
-                        effect give @a[tag=playing_{{0}},predicate=bedwars:in_void] levitation 6 20 
+                        execute as @a[tag=playing_{{0}},predicate=bedwars:in_void] at @s run function bedwars:{{0}}/go_back_to_bed
                         effect give @a[tag=playing_{{0}}] resistance 2 255 true
                         """)
                     # *[f"execute as @a[tag=playing_{{0}},team=bw{t.color}] run teleport @s {t.bed_pos}" for t in self.teams]
+                ]
+            },
+            "go_back_to_bed": {
+                COMMANDS: [
+                    textwrap.dedent("""\
+                        tellraw @s [{{"text":"You cannot leave your island until the game begins!","color":"red"}}]
+                        """),
+                    *[f"teleport @s[team={'bw' + team.color}] {team.bed_pos}" for team in self.teams],
+                    "execute at @s run playsound block.note_block.didgeridoo master @s ~ ~ ~ 1 0.3"
                 ]
             }
         }

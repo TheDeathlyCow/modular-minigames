@@ -1,0 +1,1 @@
+execute align xz run summon marker ~0.5 ~ ~0.5 {Tags:["bwpirates_weather_altar"]}
