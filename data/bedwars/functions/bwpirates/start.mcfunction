@@ -45,3 +45,4 @@ scoreboard players reset @a[tag=playing_bwpirates] bwDied
 kill @e[type=trident,tag=bwpirates_ship_trident]
 execute at @e[tag=bwpirates_ship_trident_marker] run summon trident ~ ~ ~ {pickup:1b,life:-2147483648,Tags:["ship_trident"],Trident:{id:"minecraft:trident",Count:1b,tag:{display:{Name:'{"text":"ᴘᴏꜱᴇɪᴅᴏɴ\'ꜱ ᴛʀɪᴅᴇɴᴛ","color":"dark_blue","italic":false}'},Enchantments:[{id:"minecraft:sharpness",lvl:3s},{id:"minecraft:riptide",lvl:5s}]}}}
 
+weather clear

@@ -1,0 +1,2 @@
+execute as @a[tag=playing_bwpirates,predicate=bedwars:bwpirates/holding_weather_item,distance=..7] run function bedwars:bwpirates/altar/near_altar
+scoreboard players reset @a[tag=playing_bwpirates,distance=7..] bwpirates.wa
