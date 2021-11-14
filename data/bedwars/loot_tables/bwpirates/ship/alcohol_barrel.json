@@ -1,0 +1,127 @@
+{
+  "type": "chest",
+  "pools": [
+    {
+      "rolls": {
+        "min": 1,
+        "max": 5
+      },
+      "entries": [
+        {
+          "type": "item",
+          "weight": 1,
+          "quality": 1,
+          "name": "minecraft:potion",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": 1
+            },
+            {
+              "function": "set_nbt",
+              "tag": "{CustomPotionEffects:[{Id:9b,Amplifier:0b,Duration:600},{Id:18b,Amplifier:0b,Duration:600},{Id:22b,Amplifier:1b,Duration:600}],CustomPotionColor:4002089}"
+            },
+            {
+              "function": "set_name",
+              "name": [
+                {
+                  "text": "Bottle of Rum",
+                  "italic": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "weight": 1,
+          "quality": 1,
+          "name": "minecraft:potion",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": 1
+            },
+            {
+              "function": "set_nbt",
+              "tag": "{CustomPotionEffects:[{Id:9b,Amplifier:0b,Duration:600},{Id:18b,Amplifier:0b,Duration:600},{Id:30b,Amplifier:0b,Duration:600}],CustomPotionColor:16762928}"
+            },
+            {
+              "function": "set_name",
+              "name": [
+                {
+                  "text": "Bottle of Ale",
+                  "italic": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "weight": 1,
+          "quality": 1,
+          "name": "minecraft:potion",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": 1
+            },
+            {
+              "function": "set_nbt",
+              "tag": "{CustomPotionEffects:[{Id:9b,Amplifier:0b,Duration:600},{Id:10b,Amplifier:1b,Duration:600},{Id:18b,Amplifier:0b,Duration:600}],CustomPotionColor:12190724}"
+            },
+            {
+              "function": "set_name",
+              "name": [
+                {
+                  "text": "Bottle of Wine",
+                  "italic": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "weight": 1,
+          "quality": 1,
+          "name": "minecraft:potion",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": 1
+            },
+            {
+              "function": "set_nbt",
+              "tag": "{CustomPotionEffects:[{Id:9b,Amplifier:0b,Duration:600},{Id:11b,Amplifier:1b,Duration:600},{Id:18b,Amplifier:0b,Duration:600}],CustomPotionColor:14708311}"
+            },
+            {
+              "function": "set_name",
+              "name": [
+                {
+                  "text": "Bottle of Brandy",
+                  "italic": false
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "item",
+          "weight": 1,
+          "name": "minecraft:cobweb",
+          "functions": [
+            {
+              "function": "set_count",
+              "count": {
+                "min": 1,
+                "max": 3
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
