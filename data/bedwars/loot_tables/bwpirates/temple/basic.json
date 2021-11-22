@@ -122,6 +122,14 @@
                     "functions": [
                         {
                             "function": "minecraft:enchant_randomly",
+                            "enchantments": [
+                                "minecraft:sharpness",
+                                "minecraft:channeling",
+                                "minecraft:riptide",
+                                "minecraft:fire_aspect",
+                                "minecraft:knockback",
+                                "minecraft:loyalty"
+                            ],
                             "conditions": [
                                 {
                                     "condition": "minecraft:random_chance",
