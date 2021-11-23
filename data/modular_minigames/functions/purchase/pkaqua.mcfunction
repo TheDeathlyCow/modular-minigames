@@ -1,4 +1,4 @@
-scoreboard players set @s ticket 7
+scoreboard players set @s ticket 6
 tellraw @s [{"text":"Board any train on platforms 2-5 to travel to AquaticTemple (Parkour).","color":"aqua","italic":true}]
 playsound minecraft:block.note_block.cow_bell master @s ~ ~ ~
 clear @s emerald

@@ -15,6 +15,6 @@ execute if score @s ticket matches 4 run tellraw @s {"text":"Sorry, this game is
 execute if score @s ticket matches 4 run function modular_minigames:_arrive
 
 # parkour
-execute if score @s ticket matches 6 run function parkour:pkcaves/_join
-execute if score @s ticket matches 7 run function parkour:pkaqua/_join
-execute if score @s ticket matches 8 run function parkour:pkreflect/_join
+execute if score @s ticket matches 5 run function parkour:pkcaves/_join
+execute if score @s ticket matches 6 run function parkour:pkaqua/_join
+execute if score @s ticket matches 7 run function parkour:pkreflect/_join
