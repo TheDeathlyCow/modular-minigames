@@ -2,8 +2,6 @@ teleport @s -34 8 -203 -52 -1
 tag @s add in_hub
 clear @s
 effect clear @s 
-effect give @s instant_health 1 20
-effect give @s saturation 1 20
 give @s emerald 1
 spawnpoint @s -3 4 -42
 gamemode adventure @s
