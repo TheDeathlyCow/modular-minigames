@@ -23,3 +23,7 @@ scoreboard objectives add ticket dummy
 # 2 = TotallyNotHockey (spleef)
 # 3 = Castle in the Sky (bed wars)
 # 4 = Ka Mokupuni (survival games)
+# 5 = Mossy Caves (parkour)
+# 6 = Aquatic Temple (parkour)
+# 7 = Reflections II (parkour)
+# 8 = Pirates! (bed wars)

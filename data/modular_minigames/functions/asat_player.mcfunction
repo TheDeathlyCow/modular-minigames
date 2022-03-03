@@ -1,16 +1,15 @@
-effect give @s regeneration 5 255 true
-effect give @s saturation 5 255 true
-effect give @s resistance 5 255 true
-
+# Ticks the players in the hub
+# @as All players in hub
+# @at The players position
 
 scoreboard players add @s greetCoolDwn 1
 scoreboard players operation @s greetCoolDwn %= TicksBetweenGreetings greetCoolDwn
 scoreboard players set @s[scores={greetCoolDwn=0}] greeted 0
 scoreboard players set @s[scores={greetCoolDwn=0}] greeted_ticket 0
 scoreboard players set @s[scores={greetCoolDwn=0}] greeted_engineer 0
-execute as @s[scores={greeted=0}] at @s if entity @e[tag=train_passenger,distance=..3] run function modular_minigames:random_conversation
-execute as @s[scores={greeted_ticket=0}] at @s if entity @e[tag=ticket_master,distance=..3] run function modular_minigames:ticket_greeting
-execute as @s[scores={greeted_engineer=0}] at @s if entity @e[tag=train_engineer,distance=..3] run function modular_minigames:greet_engineer
+execute if score @s greeted matches 0 if entity @e[tag=train_passenger,distance=..3] run function modular_minigames:random_conversation
+execute if score @s greeted_ticket matches 0 if entity @e[tag=ticket_master,distance=..3] run function modular_minigames:ticket_greeting
+execute if score @s greeted_engineer matches 0 if entity @e[tag=train_engineer,distance=..3] run function modular_minigames:greet_engineer
 
 
 scoreboard players enable @s buy_ticket
